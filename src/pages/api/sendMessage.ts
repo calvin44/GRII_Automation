@@ -27,7 +27,6 @@ export default async function handler(
 ) {
   try {
     if (req.method !== "POST") return res.status(405).json({ message: "Only POST method allowed" })
-
     const { userOrGroupId, message } = req.body as RequestBody
     await client.pushMessage({ to: userOrGroupId, messages: [{ type: "text", text: message }] })
     res.status(200).json({ message: "Message sent!" })
