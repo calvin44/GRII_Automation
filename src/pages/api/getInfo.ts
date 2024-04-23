@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import { messagingApi, WebhookRequestBody } from "@line/bot-sdk"
+import { messagingApi, WebhookEvent, WebhookRequestBody } from "@line/bot-sdk"
 
 interface Response {
   message?: string
@@ -15,7 +15,6 @@ const config = {
 const client = new messagingApi.MessagingApiClient({
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN ?? ""
 })
-
 
 export default async function handler(
   req: NextApiRequest,
@@ -38,19 +37,31 @@ export default async function handler(
     if (!process.env.CHANNEL_SECRET || !process.env.CHANNEL_ACCESS_TOKEN) {
       console.error("Missing required environment variables")
       res.status(500).json({ error: "Internal Server Error", message: "Missing required environment variables" })
-      return;
+      return
     }
-
+    // Get sticker info
+    const stickerInfo = getStickerInfo(event)
     switch (event.source.type) {
       case "group":
-        await client.pushMessage({ to: event.source.groupId!, messages: [{ type: "text", text: generateIdInfoMessage(event.source.groupId, "group") }] })
+        await client.pushMessage({
+          to: event.source.groupId!, messages: [{
+            type: "text",
+            text: `${generateIdInfoMessage(event.source.groupId, "group")}${stickerInfo ? "\n" + stickerInfo : ""}`
+          }]
+        })
         break
       case "user":
-        await client.pushMessage({ to: event.source.userId!, messages: [{ type: "text", text: generateIdInfoMessage(event.source.userId, "user") }] })
+        await client.pushMessage({
+          to: event.source.userId!, messages: [{
+            type: "text",
+            text: `${generateIdInfoMessage(event.source.userId, "user")}${stickerInfo ? "\n" + stickerInfo : ""}`
+          }]
+        })
         break
       default:
         break
     }
+
     res.status(200).end()
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -64,5 +75,13 @@ export default async function handler(
 }
 
 function generateIdInfoMessage(id: string, type: string) {
-  return `Your API ${type}ID is: ${id}`
+  return `Here is your API Info\n${type}ID is: ${id}`
 }
+
+function getStickerInfo(event: WebhookEvent) {
+  if (event.type !== "message" || event.message.type !== "sticker") return
+  const stickerInfo = event.message
+  const infoMessage = `StickerId: ${stickerInfo.stickerId}\nPackageId: ${stickerInfo.packageId}`
+  return infoMessage
+}
+
