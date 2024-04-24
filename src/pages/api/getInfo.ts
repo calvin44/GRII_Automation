@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { messagingApi, WebhookEvent, WebhookRequestBody } from "@line/bot-sdk"
+import { customPostRequest } from "@/utils/customFetch"
 
 interface Response {
   message?: string
@@ -51,6 +52,18 @@ export default async function handler(
         })
         break
       case "user":
+        // get user info
+        const { displayName, pictureUrl, statusMessage, userId } = await client.getProfile(event.source.userId) as messagingApi.UserProfileResponse
+        const logRequestBody = {
+          "Display Name": displayName,
+          "Profile Picture URL": pictureUrl,
+          "Status Message": statusMessage,
+          "User ID": userId
+        }
+
+        const logAPIURL = `${getDomainURL(req)}/api/logUserAccount`
+        await customPostRequest<typeof logRequestBody>(logAPIURL, logRequestBody)
+
         await client.pushMessage({
           to: event.source.userId!, messages: [{
             type: "text",
@@ -85,3 +98,15 @@ function getStickerInfo(event: WebhookEvent) {
   return infoMessage
 }
 
+function getDomainURL(req: NextApiRequest) {
+  // Get the protocol (http or https)
+  const protocol = req.headers['x-forwarded-proto'] || 'http'
+
+  // Get the domain
+  const host = req.headers['x-forwarded-host'] || req.headers.host
+
+  // Combine protocol, domain, and route to form the full URL
+  const fullUrl = `${protocol}://${host}`
+
+  return fullUrl
+}
