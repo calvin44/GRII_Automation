@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { messagingApi, WebhookEvent, WebhookRequestBody } from "@line/bot-sdk"
 import { customPostRequest } from "@/utils/customFetch"
+import { GroupInfo, UserInfo } from "./logUserAccount"
 
 interface Response {
   message?: string
@@ -22,6 +23,7 @@ export default async function handler(
   res: NextApiResponse<Response>,
 ) {
   try {
+    const logAPIURL = `${getDomainURL(req)}/api/logUserAccount`
     if (req.method !== "POST") return res.status(405).json({ message: "Only POST method allowed" })
 
     const { events } = req.body as WebhookRequestBody
@@ -50,26 +52,38 @@ export default async function handler(
             text: `${generateIdInfoMessage(event.source.groupId, "group")}${stickerInfo ? "\n" + stickerInfo : ""}`
           }]
         })
+
+        const { groupId, groupName, pictureUrl: groupPictureURL } = await client.getGroupSummary(event.source.groupId)
+
+        const groupLogRequestBody: GroupInfo = {
+          "Group Id": groupId,
+          "Group Name": groupName,
+          "Picture URL": groupPictureURL ?? ""
+        }
+
+        await customPostRequest<typeof groupLogRequestBody>(logAPIURL, groupLogRequestBody)
+
         break
       case "user":
         // get user info
-        const { displayName, pictureUrl, statusMessage, userId } = await client.getProfile(event.source.userId) as messagingApi.UserProfileResponse
-        const logRequestBody = {
-          "Display Name": displayName,
-          "Profile Picture URL": pictureUrl,
-          "Status Message": statusMessage,
-          "User ID": userId
-        }
-
-        const logAPIURL = `${getDomainURL(req)}/api/logUserAccount`
-        await customPostRequest<typeof logRequestBody>(logAPIURL, logRequestBody)
-
         await client.pushMessage({
           to: event.source.userId!, messages: [{
             type: "text",
             text: `${generateIdInfoMessage(event.source.userId, "user")}${stickerInfo ? "\n" + stickerInfo : ""}`
           }]
         })
+
+        const { displayName, pictureUrl, statusMessage, userId } = await client.getProfile(event.source.userId) as messagingApi.UserProfileResponse
+
+        const userLogRequestBody: UserInfo = {
+          "Display Name": displayName,
+          "Profile Picture URL": pictureUrl ?? "",
+          "Status Message": statusMessage ?? "",
+          "User ID": userId
+        }
+
+        await customPostRequest<typeof userLogRequestBody>(logAPIURL, userLogRequestBody)
+
         break
       default:
         break

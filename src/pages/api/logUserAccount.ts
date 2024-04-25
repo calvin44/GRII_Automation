@@ -6,15 +6,27 @@ interface ResponseData {
   message: string
 }
 
-interface RequestBody {
+export interface GroupInfo {
+  "Group Id": string
+  "Group Name": string
+  "Picture URL": string
+}
+
+export interface UserInfo {
   "Display Name": string
   "Profile Picture URL": string
   "Status Message": string
-  "User ID"?: string
-  "Group ID"?: string
+  "User ID": string
 }
 
+type RequestBody = GroupInfo | UserInfo
+
 const googleSheetId = "1ubvSQltdIf2A96PSSUBOI58U8PAwsX2f3xKlNrlZwYY"
+
+const sheetInfo = {
+  user: "User Info",
+  group: "Group Info"
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -39,26 +51,40 @@ export default async function handler(
     const doc = new GoogleSpreadsheet(googleSheetId, serviceAccountAuth)
     await doc.loadInfo()
 
-    // get the first sheet
-    const sheet = await doc.sheetsByIndex[0]
+    // get user and group sheets
+    const userSheet = doc.sheetsByTitle[sheetInfo.user]
+    const groupSheet = doc.sheetsByTitle[sheetInfo.group]
 
-    // get all rows
-    const rows = await sheet.getRows()
+    // check user or group
+    if ("User ID" in userData) {
+      const userRows = await userSheet.getRows()
+      const matchingRow = userRows.findIndex((item) => {
+        const row = item.toObject()
+        if (row["User ID"] === userData["User ID"]) return true
+        return false
+      })
 
-    const matchingRow = rows.findIndex((item) => {
-      const row = item.toObject()
-      if (row["User ID"] === userData["User ID"]) return true
-      return false
-    })
+      if (matchingRow === -1) {
+        // append value to user sheet
+        await userSheet.addRow(userData as unknown as Record<string, string>)
+      }
+    } else {
+      const groupRows = await groupSheet.getRows()
+      const matchingRow = groupRows.findIndex((item) => {
+        const row = item.toObject()
+        if (row["Group Id"] === userData["Group Id"]) return true
+        return false
+      })
 
-    if (matchingRow === -1) {
-      // append value
-      await sheet.addRow(userData as unknown as Record<string, string>)
+      if (matchingRow === -1) {
+        // append value to group sheet
+        await groupSheet.addRow(userData as unknown as Record<string, string>)
+      }
     }
 
     res.status(200).json({ message: "User Logged!" })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ message: "Somethng went wrong" })
+    res.status(500).json({ message: "Something went wrong" })
   }
 }
