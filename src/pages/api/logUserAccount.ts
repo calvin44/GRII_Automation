@@ -21,7 +21,7 @@ export interface UserInfo {
 
 type RequestBody = GroupInfo | UserInfo
 
-const googleSheetId = "1ubvSQltdIf2A96PSSUBOI58U8PAwsX2f3xKlNrlZwYY"
+const googleSheetId = "1_wXgkAdoLIPdZjXknpuI6uO5jrA2hf0qNoeXK_qd9lU"
 
 const sheetInfo = {
   user: "User Info",
@@ -43,7 +43,7 @@ export default async function handler(
       email: process.env.GOOGLE_SERVICE_EMAIL,
       key: process.env.GOOGLE_PRIVATE_KEY,
       scopes: [
-        'https://www.googleapis.com/auth/spreadsheets',
+        "https://www.googleapis.com/auth/spreadsheets",
       ],
     })
 

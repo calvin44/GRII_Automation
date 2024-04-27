@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import { messagingApi, WebhookEvent, WebhookRequestBody } from "@line/bot-sdk"
 import { customPostRequest } from "@/utils/customFetch"
 import { GroupInfo, UserInfo } from "./logUserAccount"
+import { getDomainURL } from "@/utils"
 
 interface Response {
   message?: string
@@ -31,8 +32,8 @@ export default async function handler(
 
     // validate Event Source structure
     if (!event || !event.source || !event.source.type) {
-      console.error("Invalid event structure:", event);
-      res.status(400).json({ error: "Bad Request", message: "Invalid event structure" });
+      console.error("Invalid event structure:", event)
+      res.status(400).json({ error: "Bad Request", message: "Invalid event structure" })
       return
     }
 
@@ -92,11 +93,11 @@ export default async function handler(
     res.status(200).end()
   } catch (err: unknown) {
     if (err instanceof Error) {
-      console.error('An error occurred:', err);
-      res.status(500).json({ error: 'Internal Server Error', message: err.message });
+      console.error('An error occurred:', err)
+      res.status(500).json({ error: 'Internal Server Error', message: err.message })
     } else {
-      console.error('An unknown error occurred:', err);
-      res.status(500).json({ error: 'Internal Server Error', message: 'Unknown error occurred' });
+      console.error('An unknown error occurred:', err)
+      res.status(500).json({ error: 'Internal Server Error', message: 'Unknown error occurred' })
     }
   }
 }
@@ -110,17 +111,4 @@ function getStickerInfo(event: WebhookEvent) {
   const stickerInfo = event.message
   const infoMessage = `StickerId: ${stickerInfo.stickerId}\nPackageId: ${stickerInfo.packageId}`
   return infoMessage
-}
-
-function getDomainURL(req: NextApiRequest) {
-  // Get the protocol (http or https)
-  const protocol = req.headers['x-forwarded-proto'] || 'http'
-
-  // Get the domain
-  const host = req.headers['x-forwarded-host'] || req.headers.host
-
-  // Combine protocol, domain, and route to form the full URL
-  const fullUrl = `${protocol}://${host}`
-
-  return fullUrl
 }

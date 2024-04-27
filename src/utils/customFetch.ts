@@ -1,4 +1,4 @@
-export async function customPostRequest<U>(url: string, postData: U) {
+async function customPostRequest<U>(url: string, postData: U) {
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -16,3 +16,5 @@ export async function customPostRequest<U>(url: string, postData: U) {
     throw error
   }
 }
+
+export { customPostRequest }
