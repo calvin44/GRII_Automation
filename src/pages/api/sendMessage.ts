@@ -7,7 +7,7 @@ interface ResponseData {
 
 interface RequestBody {
   userOrGroupId: string
-  message: string
+  message: messagingApi.Message[]
 }
 
 // create LINE SDK config from env variables
@@ -28,7 +28,7 @@ export default async function handler(
   try {
     if (req.method !== "POST") return res.status(405).json({ message: "Only POST method allowed" })
     const { userOrGroupId, message } = req.body as RequestBody
-    await client.pushMessage({ to: userOrGroupId, messages: [{ type: "text", text: message }] })
+    await client.pushMessage({ to: userOrGroupId, messages: message })
     res.status(200).json({ message: "Message sent!" })
   } catch (err) {
     res.status(500).json({ message: "Somethng went wrong" })

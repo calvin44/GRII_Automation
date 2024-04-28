@@ -1,0 +1,3 @@
+interface SendLineMessageRequestBody {
+  lineUserId: string
+}

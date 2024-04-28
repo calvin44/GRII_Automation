@@ -6,10 +6,6 @@ interface ResponseData {
   message: string
 }
 
-interface RequestBody {
-  lineUserId: string
-}
-
 const googleSheetId = "176cKUXNKnjmr1cireO8b9b_PeO3k58LwIGhFgaxh71U"
 
 export default async function handler(
@@ -19,7 +15,7 @@ export default async function handler(
   try {
     if (req.method !== "POST") return res.status(405).json({ message: "Only POST method allowed" })
 
-    const { lineUserId } = req.body as RequestBody
+    const { lineUserId } = req.body as SendLineMessageRequestBody
 
     // log user data to sheet
     const auth = serviceAccountAuth()
@@ -57,7 +53,7 @@ export default async function handler(
 
     // table title 
     penalayalanTitleCell.value = `Penatalayan ${titleMonth} Pk 10.30`
-    persekututanTitleCell.value = `Persekutuan Doa hari Sabtu ${titleMonth}`
+    persekututanTitleCell.value = `Persekutuan Doa hari Sabtu ${titleMonth} Pk 15.30`
 
     penalayalanTitleCell.textFormat = { bold: true, fontFamily: "Times New Roman" }
     persekututanTitleCell.textFormat = { bold: true, fontFamily: "Times New Roman" }
@@ -103,7 +99,10 @@ export default async function handler(
       const URL = `${getDomainURL(req)}/api/sendMessage`
       customPostRequest(URL, {
         userOrGroupId: lineUserId,
-        message: "Penatalayan googleSheet template generated!"
+        message: [{
+          type: "text",
+          message: "Penatalayan googleSheet template generated!"
+        }]
       })
     }
 
