@@ -3,6 +3,7 @@ import { GoogleSpreadsheet } from "google-spreadsheet"
 import { serviceAccountAuth, customPostRequest, getDomainURL, getCurrentMonthAndYear, closestSundayDate, getTemplate } from "@/utils"
 import { convertTableToObject } from "@/utils/tableUtils"
 import { months } from "@/constants/month"
+import { SendMessageRequestBody } from "./sendMessage"
 
 interface ResponseData {
   message: string
@@ -53,16 +54,16 @@ export default async function handler(
 
     // notify user
     const URL = `${getDomainURL(req)}/api/sendMessage`
-    customPostRequest(URL, {
+    customPostRequest<SendMessageRequestBody>(URL, {
       userOrGroupId: lineUserId,
       message: [
         {
           type: "text",
-          message: "Here's this week's reminder, please check it out!"
+          text: "Here's this week's reminder, please check it out!"
         },
         {
           type: "text",
-          message: reminderMessage
+          text: reminderMessage
         }
       ]
     })

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { GoogleSpreadsheet } from "google-spreadsheet"
 import { getTemplateSheetId, getNextMonthDatesForDay, offsetCellAddress, serviceAccountAuth, getNextMonthAndYear, getCellAndAddressMapping, customPostRequest, getDomainURL } from "@/utils"
+import { SendMessageRequestBody } from "./sendMessage"
 
 interface ResponseData {
   message: string
@@ -97,11 +98,11 @@ export default async function handler(
     // notify user
     if (lineUserId) {
       const URL = `${getDomainURL(req)}/api/sendMessage`
-      customPostRequest(URL, {
+      customPostRequest<SendMessageRequestBody>(URL, {
         userOrGroupId: lineUserId,
         message: [{
           type: "text",
-          message: "Penatalayan googleSheet template generated!"
+          text: "Penatalayan googleSheet template generated!"
         }]
       })
     }
