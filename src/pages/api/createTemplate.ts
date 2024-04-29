@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { GoogleSpreadsheet } from "google-spreadsheet"
-import { getTemplateSheetId, getNextMonthDatesForDay, offsetCellAddress, serviceAccountAuth, getNextMonthAndYear, getCellAndAddressMapping, customPostRequest, getDomainURL } from "@/utils"
-import { SendMessageRequestBody } from "./sendMessage"
+import { getTemplateSheetId, getNextMonthDatesForDay, serviceAccountAuth, getNextMonthAndYear, getCellAndAddressMapping } from "@/utils"
+import { client } from "@/line/client"
 
 interface ResponseData {
   message: string
@@ -95,12 +95,10 @@ export default async function handler(
     const sheetLastIndex = Object.keys(doc.sheetsByTitle).length
     await newSheet.updateProperties({ hidden: false, index: sheetLastIndex })
 
-    // notify user
+    // notify user using push message
     if (lineUserId) {
-      const URL = `${getDomainURL(req)}/api/sendMessage`
-      customPostRequest<SendMessageRequestBody>(URL, {
-        userOrGroupId: lineUserId,
-        message: [{
+      await client.pushMessage({
+        to: lineUserId, messages: [{
           type: "text",
           text: "Penatalayan googleSheet template generated!"
         }]

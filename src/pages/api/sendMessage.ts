@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Message, messagingApi } from "@line/bot-sdk"
+import { client } from "@/line/client"
 
 interface ResponseData {
   message: string
@@ -9,17 +10,6 @@ export interface SendMessageRequestBody {
   userOrGroupId: string
   message: Array<Message>
 }
-
-// create LINE SDK config from env variables
-const config = {
-  channelSecret: process.env.CHANNEL_SECRET ?? "",
-}
-
-// create LINE SDK client
-const client = new messagingApi.MessagingApiClient({
-  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN ?? ""
-})
-
 
 export default async function handler(
   req: NextApiRequest,

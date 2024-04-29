@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { GoogleSpreadsheet } from "google-spreadsheet"
-import { serviceAccountAuth, customPostRequest, getDomainURL, getCurrentMonthAndYear, closestSundayDate, getTemplate } from "@/utils"
+import { serviceAccountAuth, getCurrentMonthAndYear, closestSundayDate, getTemplate } from "@/utils"
 import { convertTableToObject } from "@/utils/tableUtils"
 import { months } from "@/constants/month"
-import { SendMessageRequestBody } from "./sendMessage"
+import { client } from "@/line/client"
 
 interface ResponseData {
   message: string
@@ -53,10 +53,8 @@ export default async function handler(
     const reminderMessage = getTemplate({ date: currentWeekDate.fullDate, ...penatalayanInfo })
 
     // notify user
-    const URL = `${getDomainURL(req)}/api/sendMessage`
-    customPostRequest<SendMessageRequestBody>(URL, {
-      userOrGroupId: lineUserId,
-      message: [
+    await client.pushMessage({
+      to: lineUserId, messages: [
         {
           type: "text",
           text: "Here's this week's reminder, please check it out!"
@@ -67,8 +65,7 @@ export default async function handler(
         }
       ]
     })
-
-    res.status(200).json({ message: "Template created!" })
+    res.status(200).json({ message: "reminder sent!" })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: "Something went wrong" })
