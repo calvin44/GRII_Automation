@@ -18,12 +18,12 @@ export function getTemplate(
   return `Selamat malam semua, bagi penatalayanan pada ${date}
 
 KU  (pk 10.30)
-Liturgis: ${Liturgis}  
-Song leader: ${songLeader1} ${songLeader2.length > 0 ? "," + songLeader2 : ""}
-Pianist: ${Pemusik}
-Usher: ${usher1} ${usher2.length > 0 ? "," + usher2 : ""}
-Audio Visual: ${audioVisual}
-Doa Persembahan: ${doaPersembahan}
+Liturgis: ${Liturgis.trim()}  
+Song leader: ${songLeader1.trim()}${songLeader2.length > 0 ? ", " + songLeader2.trim() : ""}
+Pianist: ${Pemusik.trim()}
+Usher: ${usher1.trim()}${usher2.length > 0 ? ", " + usher2.trim() : ""}
+Audio Visual: ${audioVisual.trim()}
+Doa Persembahan: ${doaPersembahan.trim()}
 
 Diingatkan kembali bagi semua penatalayan untuk berbusana yng sopan saat melayani!
 Mohon mempersiapkan diri dgn baik untuk melayani dalam ibadah. God bless u all!!
