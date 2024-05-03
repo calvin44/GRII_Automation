@@ -25,7 +25,7 @@ Usher: ${usher1.trim()}${usher2.length > 0 ? ", " + usher2.trim() : ""}
 Audio Visual: ${audioVisual.trim()}
 Doa Persembahan: ${doaPersembahan.trim()}
 
-Diingatkan kembali bagi semua penatalayan untuk berbusana yng sopan saat melayani!
+Diingatkan kembali bagi semua penatalayan untuk berbusana yang sopan saat melayani!
 Mohon mempersiapkan diri dgn baik untuk melayani dalam ibadah. God bless u all!!
 `
 }

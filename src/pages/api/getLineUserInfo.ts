@@ -43,8 +43,16 @@ export default async function handler(
       res.status(500).json({ error: "Internal Server Error", message: "Missing required environment variables" })
       return
     }
-    // Get sticker info
+
+    if (event.type !== "message" || event.message.type !== "text") return res.status(200)
+
+    const userCommand = event.message.text
+    const matchingCommand = userCommand.match(/get\s*id/i)
+    if (!matchingCommand?.length) return res.status(200)
+
+    // get sticker info
     const stickerInfo = getStickerInfo(event)
+
     switch (event.source.type) {
       case "group":
         await client.pushMessage({
