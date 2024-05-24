@@ -19,9 +19,9 @@ export function getTemplate(
 
 KU  (pk 10.30)
 Liturgis: ${Liturgis.trim()}  
-Song leader: ${songLeader1.trim()}${songLeader2.length > 0 ? ", " + songLeader2.trim() : ""}
+Song leader: ${songLeader1.trim()}${songLeader2.trim() != "-" ? ", " + songLeader2.trim() : ""}
 Pianist: ${Pemusik.trim()}
-Usher: ${usher1.trim()}${usher2.length > 0 ? ", " + usher2.trim() : ""}
+Usher: ${usher1.trim()}${usher2.trim() != "-" ? ", " + usher2.trim() : ""}
 Audio Visual: ${audioVisual.trim()}
 Doa Persembahan: ${doaPersembahan.trim()}
 
