@@ -42,7 +42,7 @@ export default async function handler(
     const sheet = doc.sheetsByTitle[sheetName]
 
     // read table
-    const rows = await sheet.getCellsInRange("B3:G11")
+    const rows = await sheet.getCellsInRange("B3:G12")
     const jadwalPentalayan = convertTableToObject(rows)
 
     // get data from Object
