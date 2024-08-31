@@ -7,17 +7,24 @@ type PenatalayanInfo = {
   "Doa Persembahan": string
 }
 
+function formatValue(value: string) {
+  const trimmedValue = value.trim()
+  if (trimmedValue !== "-") return trimmedValue
+  return ""
+}
+
 type JadwalPenatalayan = { [key: string]: PenatalayanInfo }
 
 function getName(id: number, jobDesc: (keyof PenatalayanInfo)[], tableContent: string[][]): PenatalayanInfo {
   const combinedObject = jobDesc.reduce<Partial<PenatalayanInfo>>((acc, key, index) => {
-    const value = tableContent[index][id + 1].trim()
+    const value = formatValue(tableContent[index][id + 1])
     if (key.length === 0 && index > 0) {
       const prevKey = jobDesc[index - 1]
-      if (acc[prevKey]) {
-        acc[prevKey] = `${acc[prevKey]!.trim()}, ${value}`
+      let prevValue = acc[prevKey]
+      if (prevValue !== undefined) {
+        prevValue = `${formatValue(prevValue)}${value.length === 0 ? "" : ", "}${value}`
       } else {
-        acc[prevKey] = value
+        prevValue = value
       }
     } else {
       acc[key] = value
