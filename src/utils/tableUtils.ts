@@ -18,17 +18,21 @@ type JadwalPenatalayan = { [key: string]: PenatalayanInfo }
 function getName(id: number, jobDesc: (keyof PenatalayanInfo)[], tableContent: string[][]): PenatalayanInfo {
   const combinedObject = jobDesc.reduce<Partial<PenatalayanInfo>>((acc, key, index) => {
     const value = formatValue(tableContent[index][id + 1])
+
     if (key.length === 0 && index > 0) {
       const prevKey = jobDesc[index - 1]
       let prevValue = acc[prevKey]
+
       if (prevValue !== undefined) {
         prevValue = `${formatValue(prevValue)}${value.length === 0 ? "" : ", "}${value}`
+        acc[prevKey] = prevValue // Explicitly set the updated value
       } else {
-        prevValue = value
+        acc[prevKey] = value
       }
     } else {
       acc[key] = value
     }
+
     return acc
   }, {})
 
