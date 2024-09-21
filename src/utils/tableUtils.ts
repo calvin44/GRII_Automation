@@ -7,28 +7,35 @@ type PenatalayanInfo = {
   "Doa Persembahan": string
 }
 
-function formatValue(value: string) {
-  const trimmedValue = value.trim()
-  if (trimmedValue !== "-") return trimmedValue
-  return ""
-}
-
 type JadwalPenatalayan = { [key: string]: PenatalayanInfo }
 
+// Helper function to format values
+function formatValue(value: string): string {
+  const trimmedValue = value.trim()
+  return trimmedValue !== "-" ? trimmedValue : ""
+}
+
+// Helper function to append a new value to the previous key's value
+function appendToPreviousValue(
+  acc: Partial<PenatalayanInfo>, 
+  prevKey: keyof PenatalayanInfo, 
+  newValue: string
+) {
+  if (newValue) {
+    acc[prevKey] = acc[prevKey]
+      ? `${acc[prevKey]}, ${newValue}`
+      : newValue
+  }
+}
+
+// Processes a row and returns a PenatalayanInfo object
 function getName(id: number, jobDesc: (keyof PenatalayanInfo)[], tableContent: string[][]): PenatalayanInfo {
-  const combinedObject = jobDesc.reduce<Partial<PenatalayanInfo>>((acc, key, index) => {
+  const result = jobDesc.reduce<Partial<PenatalayanInfo>>((acc, key, index) => {
     const value = formatValue(tableContent[index][id + 1])
 
+    // Append value to the previous key if the current key is empty
     if (key.length === 0 && index > 0) {
-      const prevKey = jobDesc[index - 1]
-      let prevValue = acc[prevKey]
-
-      if (prevValue !== undefined) {
-        prevValue = `${formatValue(prevValue)}${value.length === 0 ? "" : ", "}${value}`
-        acc[prevKey] = prevValue // Explicitly set the updated value
-      } else {
-        acc[prevKey] = value
-      }
+      appendToPreviousValue(acc, jobDesc[index - 1], value)
     } else {
       acc[key] = value
     }
@@ -36,17 +43,18 @@ function getName(id: number, jobDesc: (keyof PenatalayanInfo)[], tableContent: s
     return acc
   }, {})
 
-  // Ensure all keys are present in the resulting object
-  return {
-    Liturgis: combinedObject.Liturgis || "",
-    "Song leader": combinedObject["Song leader"] || "",
-    Pemusik: combinedObject.Pemusik || "",
-    Usher: combinedObject.Usher || "",
-    "Audio Visual": combinedObject["Audio Visual"] || "",
-    "Doa Persembahan": combinedObject["Doa Persembahan"] || ""
-  }
+  // Return the full PenatalayanInfo object ensuring all keys are present
+  return Object.assign({
+    Liturgis: "",
+    "Song leader": "",
+    Pemusik: "",
+    Usher: "",
+    "Audio Visual": "",
+    "Doa Persembahan": ""
+  }, result)
 }
 
+// Converts the table into a JadwalPenatalayan object where dates are keys
 function convertTableToObject(table: string[][]): JadwalPenatalayan {
   const [header, ...tableContent] = table
   const jobDesc = tableContent.map(row => row[0]) as (keyof PenatalayanInfo)[]

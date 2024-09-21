@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { GoogleSpreadsheet } from "google-spreadsheet"
-import { getTemplateSheetId, getNextMonthDatesForDay, serviceAccountAuth, getNextMonthAndYear, getCellAndAddressMapping } from "@/utils"
+import { getTemplateSheetId, getNextMonthDatesForDay, serviceAccountAuth, getNextMonthAndYear, getCellAndAddressMapping, SHEET_IDS } from "@/utils"
 import { client } from "@/line/client"
 
 interface ResponseData {
   message: string
 }
 
-const googleSheetId = "176cKUXNKnjmr1cireO8b9b_PeO3k58LwIGhFgaxh71U"
+const googleSheetId = SHEET_IDS.JADWAL_PENATALAYAN
 
 export default async function handler(
   req: NextApiRequest,
@@ -107,7 +107,7 @@ export default async function handler(
 
     res.status(200).json({ message: "Template created!" })
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: "Something went wrong" })
+    console.error("Error while processing template: ", err)
+    res.status(500).json({ message: "Internal Server Error" })
   }
 }
