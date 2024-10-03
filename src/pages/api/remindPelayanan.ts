@@ -69,6 +69,11 @@ export default async function handler(
 // Utility function for getting data from Google Sheets
 async function getSheetData(doc: GoogleSpreadsheet, sheetName: string) {
   const sheet = doc.sheetsByTitle[sheetName]
+  
+  if (!sheet) {
+    throw new Error(`Sheet with name "${sheetName}" not found.`)
+  }
+
   const rows = await sheet.getCellsInRange("B3:G12")
   return convertTableToObject(rows)
 }

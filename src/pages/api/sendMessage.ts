@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import { Message, messagingApi } from "@line/bot-sdk"
+import { Message } from "@line/bot-sdk"
 import { client } from "@/line/client"
 
 interface ResponseData {
