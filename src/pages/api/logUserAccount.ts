@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { GoogleSpreadsheet } from "google-spreadsheet"
-import { JWT } from "google-auth-library"
 import { serviceAccountAuth, SHEET_IDS } from "@/utils"
 
 interface ResponseData {
