@@ -18,7 +18,10 @@ type ResponseData = SuccessResponse | ErrorResponse
 const googleSheetId = SHEET_IDS.TARGET_USER_IDS
 const sheetName = "RemindUserIds"
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseData>
+) {
   try {
     // Validate that only GET requests are allowed
     if (req.method !== "GET") {
@@ -37,11 +40,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // Check if the sheet exists
     if (!googleSheet) {
-      return res.status(404).json({ message: `Sheet with name "${sheetName}" not found.` })
+      return res
+        .status(404)
+        .json({ message: `Sheet with name "${sheetName}" not found.` })
     }
 
     // Retrieve the data from columns A and B
-    const idTable: string[][] = await googleSheet.getCellsInRange("A:B")
+    const idTable: string[][] = await googleSheet.getCellsInRange("A:C")
 
     // Convert the 2D array into objects
     const ids = convert2DArrayToObject(idTable)

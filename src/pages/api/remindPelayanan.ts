@@ -26,11 +26,12 @@ export default async function handler(
   }
 
   try {
-    // Expecting an array of { lineUserId: string } in the request body
-    const lineUserIds = req.body as { lineUserId: string }[]
+    const { lineUserId } = req.body as { lineUserId: string }
 
-    if (!Array.isArray(lineUserIds) || lineUserIds.length === 0) {
-      return res.status(400).json({ message: "Invalid request, lineUserIds is required" })
+    if (!lineUserId) {
+      return res
+        .status(400)
+        .json({ message: "Invalid request, lineUserIds is required" })
     }
 
     const auth = serviceAccountAuth()
@@ -58,19 +59,16 @@ export default async function handler(
       ...penatalayanInfo,
     })
 
-    // Push messages via LINE API using Promise.all for concurrent execution
-    await Promise.all(
-      lineUserIds.map(async ({ lineUserId }) => {
-        await client.pushMessage({
-          to: lineUserId,
-          messages: [
-            { type: "text", text: "Here's this week's reminder, please check it out!" },
-            { type: "text", text: reminderMessage },
-          ],
-        })
-      })
-    )
-
+    await client.pushMessage({
+      to: lineUserId,
+      messages: [
+        {
+          type: "text",
+          text: "Here's this week's reminder, please check it out!",
+        },
+        { type: "text", text: reminderMessage },
+      ],
+    })
     res.status(200).json({ message: "Reminder sent!" })
   } catch (err) {
     console.error("Error while processing reminder: ", err)
@@ -86,6 +84,33 @@ async function getSheetData(doc: GoogleSpreadsheet, sheetName: string) {
     throw new Error(`Sheet with name "${sheetName}" not found.`)
   }
 
-  const rows = await sheet.getCellsInRange("B3:G12")
-  return convertTableToObject(rows)
+  // assume the column range is from B:K
+  const startCol = "B"
+  const endCol = "K"
+
+  const rows = (await sheet.getCellsInRange(
+    `${startCol}:${endCol}`
+  )) as string[][]
+
+  const filteredRows = getTableRange(rows)
+
+  return convertTableToObject(filteredRows)
+}
+
+function getTableRange(rowList: string[][]) {
+  const filteredList = []
+  let isWithinRange = false
+
+  for (const row of rowList) {
+    if (row.some((item) => item.includes("Pk 10.30"))) {
+      isWithinRange = true
+      continue
+    }
+
+    if (!isWithinRange) continue
+    if (row.some((item) => item.includes("Persekutuan Doa"))) break
+    if (row.length > 0) filteredList.push(row)
+  }
+
+  return filteredList
 }
