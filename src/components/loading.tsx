@@ -17,7 +17,6 @@ export const Loading = () => {
       <Image
         src="/globe-animated.gif"
         alt="Loading"
-        layout="intrinsic"
         width={150}
         height={150}
         style={{ maxWidth: "100%", height: "auto" }}

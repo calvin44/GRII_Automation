@@ -10,6 +10,8 @@ import {
 import { useCallback, useState } from "react"
 import { CheckCircle } from "@mui/icons-material"
 import { motion } from "framer-motion"
+import { useDisplayDialog } from "@/customHook/useDisplayDialog"
+import { ErrorDialog } from "./errorDialog"
 
 interface TargetUserListProps {
   userList: TargetUser[]
@@ -18,6 +20,12 @@ interface TargetUserListProps {
 export const TargetUserList: React.FC<TargetUserListProps> = ({ userList }) => {
   const [sendingId, setSendingId] = useState("")
   const [successId, setSuccessId] = useState("")
+  const {
+    showDialog: showErrorDialog,
+    onCloseDialog: onCloseErrorDialog,
+    openDialog: openErrorDialog,
+    closeDialog: closeErrorDialog,
+  } = useDisplayDialog()
 
   // Trigger reminder API call
   const triggerReminder = useCallback(async (userId: string) => {
@@ -42,7 +50,7 @@ export const TargetUserList: React.FC<TargetUserListProps> = ({ userList }) => {
       setTimeout(() => setSuccessId(""), 2000)
     } catch (error) {
       console.error("Error:", error)
-      window.alert("Something went wrong, please contact the developer")
+      openErrorDialog()
     } finally {
       setSendingId("")
     }
@@ -125,6 +133,11 @@ export const TargetUserList: React.FC<TargetUserListProps> = ({ userList }) => {
           ))}
         </List>
       </Box>
+      <ErrorDialog
+        showErrorDialog={showErrorDialog}
+        onCloseErrorDialog={onCloseErrorDialog}
+        closeErrorDialog={closeErrorDialog}
+      />
     </Box>
   )
 }
