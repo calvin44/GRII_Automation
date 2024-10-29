@@ -35,9 +35,17 @@ export default function Home() {
   // Fetch the user data when the component mounts
   useEffect(() => {
     const fetchData = async () => {
+      const fetchStart = Date.now() // Record the start time
       const usersData = await fetchTargetUser()
       setAllUsers(usersData) // Set the fetched data into state
-      setLoading(false)
+
+      // Calculate elapsed time and wait if it's less than 5 seconds
+      const elapsedTime = Date.now() - fetchStart
+      const remainingTime = Math.max(5000 - elapsedTime, 0) // Calculate remaining time
+
+      setTimeout(() => {
+        setLoading(false) // Hide loading after the remaining time
+      }, remainingTime)
     }
 
     fetchData()
