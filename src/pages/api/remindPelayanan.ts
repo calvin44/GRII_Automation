@@ -26,7 +26,7 @@ export default async function handler(
   }
 
   try {
-    const { lineUserId } = req.body as { lineUserId: string }
+    const { lineUserId } = req.body as SendLineMessageRequestBody
 
     if (!lineUserId) {
       return res

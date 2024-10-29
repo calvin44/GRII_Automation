@@ -6,13 +6,6 @@ import { Scripture } from "@/components/scripture"
 import { TargetUserList } from "@/components/targetUserList"
 import { Loading } from "@/components/loading"
 
-export interface TargetUser {
-  LineDisplayName: string
-  "User/GroupID": string
-}
-
-export type RemindRequestBody = { lineUserId: string }
-
 export default function Home() {
   const [loading, setLoading] = useState(true)
   const [allUsers, setAllUsers] = useState<TargetUser[]>([])

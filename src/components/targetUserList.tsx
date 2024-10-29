@@ -1,4 +1,3 @@
-import { TargetUser } from "@/pages"
 import {
   Box,
   LinearProgress,
@@ -7,7 +6,6 @@ import {
   ListItemButton,
   ListItemText,
   Typography,
-  IconButton,
 } from "@mui/material"
 import { useCallback, useState } from "react"
 import { CheckCircle } from "@mui/icons-material"

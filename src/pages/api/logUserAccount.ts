@@ -6,38 +6,24 @@ interface ResponseData {
   message: string
 }
 
-export interface GroupInfo {
-  "Group Id": string
-  "Group Name": string
-  "Picture URL": string
-}
-
-export interface UserInfo {
-  "Display Name": string
-  "Profile Picture URL": string
-  "Status Message": string
-  "User ID": string
-}
-
-type RequestBody = GroupInfo | UserInfo
-
 const googleSheetId = SHEET_IDS.LOG_USER_ACCOUNT
 
 const sheetInfo = {
   user: "User Info",
-  group: "Group Info"
+  group: "Group Info",
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
+  res: NextApiResponse<ResponseData>
 ) {
   try {
-    if (req.method !== "POST") return res.status(405).json({ message: "Only POST method allowed" })
+    if (req.method !== "POST")
+      return res.status(405).json({ message: "Only POST method allowed" })
     const userData = req.body as RequestBody
 
     const auth = serviceAccountAuth()
-    const doc= new GoogleSpreadsheet(googleSheetId, auth)
+    const doc = new GoogleSpreadsheet(googleSheetId, auth)
     await doc.loadInfo()
 
     // get user and group sheets
