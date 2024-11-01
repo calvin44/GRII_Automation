@@ -18,25 +18,22 @@ const Transition = forwardRef<
 })
 
 interface ErrorDialogProps {
-  showErrorDialog: boolean
-  onCloseErrorDialog: (
-    event: {},
-    reason: "backdropClick" | "escapeKeyDown"
-  ) => void
-  closeErrorDialog: () => void
+  showDialog: boolean
+  onCloseDialog: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void
+  closeDialog: () => void
 }
 
 export const ErrorDialog: React.FC<ErrorDialogProps> = ({
-  showErrorDialog,
-  onCloseErrorDialog,
-  closeErrorDialog,
+  showDialog,
+  onCloseDialog,
+  closeDialog,
 }) => {
   return (
     <Dialog
-      open={showErrorDialog}
+      open={showDialog}
       TransitionComponent={Transition}
       keepMounted
-      onClose={onCloseErrorDialog}
+      onClose={onCloseDialog}
       sx={{
         "& .MuiPaper-root": {
           borderRadius: 5,
@@ -72,7 +69,7 @@ export const ErrorDialog: React.FC<ErrorDialogProps> = ({
             paddingLeft: 4,
             paddingRight: 4,
           }}
-          onClick={closeErrorDialog}
+          onClick={closeDialog}
           variant="contained"
         >
           Close

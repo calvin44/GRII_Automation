@@ -1,143 +1,157 @@
 import {
   Box,
   LinearProgress,
-  List,
   ListItem,
   ListItemButton,
   ListItemText,
   Typography,
 } from "@mui/material"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { CheckCircle } from "@mui/icons-material"
 import { motion } from "framer-motion"
 import { useDisplayDialog } from "@/customHook/useDisplayDialog"
 import { ErrorDialog } from "./errorDialog"
+import { CustomList } from "./customList"
 
-interface TargetUserListProps {
-  userList: TargetUser[]
-}
-
-export const TargetUserList: React.FC<TargetUserListProps> = ({ userList }) => {
+export const TargetUserList: React.FC = () => {
+  const [allUsers, setAllUsers] = useState<TargetUser[]>([])
   const [sendingId, setSendingId] = useState("")
   const [successId, setSuccessId] = useState("")
-  const {
-    showDialog: showErrorDialog,
-    onCloseDialog: onCloseErrorDialog,
-    openDialog: openErrorDialog,
-    closeDialog: closeErrorDialog,
-  } = useDisplayDialog()
+  const { openDialog: showErrorDialog, ...errorDialogProps } =
+    useDisplayDialog()
 
-  // Trigger reminder API call
-  const triggerReminder = useCallback(async (userId: string) => {
+  const fetchTargetUser = useCallback(async (): Promise<TargetUser[]> => {
     try {
-      setSendingId(userId)
-      const response = await fetch("/api/remindPelayanan", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ lineUserId: userId }),
-      })
-
-      if (!response.ok) {
+      const response = await fetch("/api/getTargetReminder")
+      if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      await response.json()
-      setSuccessId(userId)
-
-      // Show success icon for 1 second
-      setTimeout(() => setSuccessId(""), 2000)
-    } catch (error) {
-      console.error("Error:", error)
-      openErrorDialog()
-    } finally {
-      setSendingId("")
+      const data = await response.json()
+      return data["ids"] as TargetUser[]
+    } catch (err) {
+      console.error("Error:", err)
+      showErrorDialog()
+      return []
     }
   }, [])
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const usersData = await fetchTargetUser()
+      setAllUsers(usersData)
+    }
+    fetchData()
+  }, [fetchTargetUser])
+
+  const triggerReminder = useCallback(
+    async (userId: string) => {
+      try {
+        setSendingId(userId)
+        const response = await fetch("/api/remindPelayanan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lineUserId: userId }),
+        })
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`)
+        setSuccessId(userId)
+        setTimeout(() => setSuccessId(""), 2000)
+      } catch (error) {
+        console.error("Error:", error)
+        showErrorDialog()
+      } finally {
+        setSendingId("")
+      }
+    },
+    [showErrorDialog]
+  )
+
   return (
-    <Box
-      height="100%"
-      display="flex"
-      flexDirection="column"
-      gap={3}
-      sx={{ overflow: "hidden" }}
-    >
-      <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-        User Lists
-      </Typography>
-
-      <Box sx={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
-        <List sx={{ overflowY: "auto", height: "100%" }}>
-          {userList.map((user) => (
-            <ListItem
-              disablePadding
-              key={user["User/GroupID"]}
-              sx={{
-                bgcolor: "#f2f2f2",
-                borderRadius: 2,
-                marginBottom: 2,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                overflow: "hidden",
-                position: "relative",
-              }}
-            >
-              <ListItemButton
-                sx={{ justifyContent: "space-evenly", gap: 3, width: "100%" }}
-                disabled={sendingId === user["User/GroupID"]}
-                onClick={() => triggerReminder(user["User/GroupID"])}
-              >
-                {successId !== user["User/GroupID"] && (
-                  <ListItemText
-                    secondaryTypographyProps={{
-                      textOverflow: "ellipsis",
-                      overflow: "hidden",
-                    }}
-                    primary={user.LineDisplayName}
-                    secondary={
-                      sendingId === user["User/GroupID"]
-                        ? "Sending reminder..."
-                        : user["User/GroupID"]
-                    }
-                  />
-                )}
-
-                {successId === user["User/GroupID"] && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                  >
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      gap={1}
-                      paddingTop={2}
-                      paddingBottom={2}
-                      width="100%"
-                    >
-                      <Typography>Sent</Typography>
-                      <CheckCircle color="primary" />
-                    </Box>
-                  </motion.div>
-                )}
-              </ListItemButton>
-              {sendingId === user["User/GroupID"] && (
-                <Box width="100%">
-                  <LinearProgress />
-                </Box>
-              )}
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-      <ErrorDialog
-        showErrorDialog={showErrorDialog}
-        onCloseErrorDialog={onCloseErrorDialog}
-        closeErrorDialog={closeErrorDialog}
-      />
-    </Box>
+    <CustomList title="User List">
+      {allUsers.length > 0 &&
+        allUsers.map((user) => (
+          <UserListItem
+            key={user["User/GroupID"]}
+            user={user}
+            sendingId={sendingId}
+            successId={successId}
+            onTriggerReminder={triggerReminder}
+          />
+        ))}
+      <ErrorDialog {...errorDialogProps} />
+    </CustomList>
   )
 }
+
+interface UserListItemProps {
+  user: TargetUser
+  sendingId: string
+  successId: string
+  onTriggerReminder: (userId: string) => void
+}
+
+const UserListItem: React.FC<UserListItemProps> = ({
+  user,
+  sendingId,
+  successId,
+  onTriggerReminder,
+}) => (
+  <ListItem
+    disablePadding
+    key={user["User/GroupID"]}
+    sx={{
+      bgcolor: "#f2f2f2",
+      borderRadius: 2,
+      marginBottom: 2,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-start",
+      overflow: "hidden",
+      position: "relative",
+    }}
+  >
+    <ListItemButton
+      sx={{ justifyContent: "space-evenly", gap: 3, width: "100%" }}
+      disabled={sendingId === user["User/GroupID"]}
+      onClick={() => onTriggerReminder(user["User/GroupID"])}
+    >
+      {successId !== user["User/GroupID"] && (
+        <ListItemText
+          secondaryTypographyProps={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+          }}
+          primary={user.LineDisplayName}
+          secondary={
+            sendingId === user["User/GroupID"]
+              ? "Sending reminder..."
+              : user["User/GroupID"]
+          }
+        />
+      )}
+
+      {successId === user["User/GroupID"] && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <Box
+            display="flex"
+            justifyContent="center"
+            gap={1}
+            paddingTop={2}
+            paddingBottom={2}
+            width="100%"
+          >
+            <Typography>Sent</Typography>
+            <CheckCircle color="primary" />
+          </Box>
+        </motion.div>
+      )}
+    </ListItemButton>
+    {sendingId === user["User/GroupID"] && (
+      <Box width="100%">
+        <LinearProgress />
+      </Box>
+    )}
+  </ListItem>
+)

@@ -1,58 +1,14 @@
 import Head from "next/head"
-import { useCallback, useEffect, useState } from "react"
 import { Box } from "@mui/material"
 import { Header } from "@/components/header"
 import { Scripture } from "@/components/scripture"
 import { TargetUserList } from "@/components/targetUserList"
-import { Loading } from "@/components/loading"
+import { FeatureSelect } from "@/components/featureSelect"
+import { useSelectFeature } from "@/customHook/useSelectFeature"
+import { DriveFileList } from "@/components/driveFileList"
 
 export default function Home() {
-  const [loading, setLoading] = useState(true)
-  const [allUsers, setAllUsers] = useState<TargetUser[]>([])
-
-  // Fetch user data from the API
-  const fetchTargetUser = useCallback(async (): Promise<TargetUser[]> => {
-    try {
-      const response = await fetch("/api/getTargetReminder")
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-
-      // Ensure data is returned as an array of objects
-      return data["ids"] as TargetUser[]
-    } catch (err) {
-      console.error("Error:", err)
-      window.alert("Something went wrong, please contact the developer")
-
-      // Return an empty array to avoid potential undefined issues
-      return []
-    }
-  }, [])
-
-  // Fetch the user data when the component mounts
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchStart = Date.now() // Record the start time
-      const usersData = await fetchTargetUser()
-      setAllUsers(usersData) // Set the fetched data into state
-
-      // Calculate elapsed time and wait if it's less than 5 seconds
-      const elapsedTime = Date.now() - fetchStart
-      const remainingTime = Math.max(5000 - elapsedTime, 0) // Calculate remaining time
-
-      setTimeout(() => {
-        setLoading(false) // Hide loading after the remaining time
-      }, remainingTime)
-    }
-
-    fetchData()
-  }, [fetchTargetUser])
-
-  if (loading) return <Loading />
-
+  const { selectedFeature, handleFeatureSelect } = useSelectFeature()
   return (
     <Box
       height="100%"
@@ -79,7 +35,12 @@ export default function Home() {
       >
         <Header />
         <Scripture />
-        <TargetUserList userList={allUsers} />
+        <FeatureSelect
+          feature={selectedFeature}
+          handleFeatureSelect={handleFeatureSelect}
+        />
+        {selectedFeature === "reminder" && <TargetUserList />}
+        {selectedFeature === "laguKU" && <DriveFileList />}
       </Box>
     </Box>
   )

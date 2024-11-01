@@ -2,7 +2,7 @@ interface GetTemplateInput extends PenatalayanInfo {
   date: string
 }
 
-type PenatalayanInfoWithoutDate = Omit<GetTemplateInput, 'date'>
+type PenatalayanInfoWithoutDate = Omit<GetTemplateInput, "date">
 
 export function getTemplate(penatalayan: GetTemplateInput) {
   const { date, ...penatalayanInfo } = penatalayan
@@ -10,10 +10,10 @@ export function getTemplate(penatalayan: GetTemplateInput) {
   const {
     Liturgis,
     "Song leader": songLeader,
-    "Pemusik": pemusik,
-    "Usher": usher,
+    Pemusik: pemusik,
+    Usher: usher,
     "Audio Visual": audioVisual,
-    "Doa Persembahan": doaPersembahan
+    "Doa Persembahan": doaPersembahan,
   } = penatalayanInfo
 
   return `Selamat malam semua, bagi penatalayanan pada ${date}
@@ -35,8 +35,8 @@ ${generateMention(penatalayanInfo)}
 
 function generateMention(obj: PenatalayanInfoWithoutDate): string {
   return Object.values(obj)
-    .flatMap(value => value.split(",").map(name => name.trim()))
-    .filter(name => name.length > 0)
-    .map(name => `@${name}`)
-    .join("\n");
+    .flatMap((value) => value.split(",").map((name) => name.trim()))
+    .filter((name) => name.length > 0)
+    .map((name) => `@${name}`)
+    .join("\n")
 }

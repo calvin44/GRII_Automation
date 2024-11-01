@@ -1,5 +1,5 @@
 import { DialogProps } from "@mui/material"
-import { SyntheticEvent, useCallback, useState } from "react"
+import { useCallback, useState } from "react"
 
 export const useDisplayDialog = () => {
   const [showDialog, setShowDialog] = useState(false)

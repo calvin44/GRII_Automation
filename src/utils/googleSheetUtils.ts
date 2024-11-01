@@ -1,6 +1,10 @@
 import { JWT } from "google-auth-library"
 
-function offsetCellAddress(cellAddress: string, columnOffset: number, rowOffset: number): string {
+function offsetCellAddress(
+  cellAddress: string,
+  columnOffset: number,
+  rowOffset: number
+): string {
   // Split the cell address into column and row parts
   const column = cellAddress.match(/[A-Z]+/)![0]
   const row = parseInt(cellAddress.match(/[0-9]+/)![0])
@@ -28,7 +32,8 @@ function getRowColumnIndices(cellAddress: string): {
   // Convert column letters to column index (A -> 1, B -> 2, ..., Z -> 26, AA -> 27, etc.)
   let columnNumber = 0
   for (let i = 0; i < column.length; i++) {
-    columnNumber = columnNumber * 26 + (column.charCodeAt(i) - "A".charCodeAt(0) + 1)
+    columnNumber =
+      columnNumber * 26 + (column.charCodeAt(i) - "A".charCodeAt(0) + 1)
   }
 
   return { row, column: columnNumber - 1 }
@@ -40,10 +45,10 @@ function serviceAccountAuth() {
     key: process.env.GOOGLE_PRIVATE_KEY,
     scopes: [
       "https://www.googleapis.com/auth/spreadsheets",
+      "https://www.googleapis.com/auth/drive.readonly",
     ],
   })
   return auth
 }
 
 export { offsetCellAddress, getRowColumnIndices, serviceAccountAuth }
-
