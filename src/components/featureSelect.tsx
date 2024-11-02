@@ -1,7 +1,7 @@
 import { ToggleButton, ToggleButtonGroup } from "@mui/material"
 
 export interface FeatureSelectProps {
-  feature: "reminder" | "laguKU"
+  feature: Feature
   handleFeatureSelect: (feat: FeatureSelectProps["feature"]) => void
 }
 

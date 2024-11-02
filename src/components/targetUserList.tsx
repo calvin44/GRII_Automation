@@ -12,6 +12,7 @@ import { motion } from "framer-motion"
 import { useDisplayDialog } from "@/customHook/useDisplayDialog"
 import { ErrorDialog } from "./errorDialog"
 import { CustomList } from "./customList"
+import { Loading } from "./loading"
 
 export const TargetUserList: React.FC = () => {
   const [allUsers, setAllUsers] = useState<TargetUser[]>([])
@@ -67,6 +68,7 @@ export const TargetUserList: React.FC = () => {
 
   return (
     <CustomList title="User List">
+      {allUsers.length === 0 && <Loading />}
       {allUsers.length > 0 &&
         allUsers.map((user) => (
           <UserListItem
@@ -95,63 +97,69 @@ const UserListItem: React.FC<UserListItemProps> = ({
   successId,
   onTriggerReminder,
 }) => (
-  <ListItem
-    disablePadding
-    key={user["User/GroupID"]}
-    sx={{
-      bgcolor: "#f2f2f2",
-      borderRadius: 2,
-      marginBottom: 2,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-start",
-      overflow: "hidden",
-      position: "relative",
-    }}
+  <motion.div
+    initial={{ opacity: 0, scale: 0.5 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.5 }}
   >
-    <ListItemButton
-      sx={{ justifyContent: "space-evenly", gap: 3, width: "100%" }}
-      disabled={sendingId === user["User/GroupID"]}
-      onClick={() => onTriggerReminder(user["User/GroupID"])}
+    <ListItem
+      disablePadding
+      key={user["User/GroupID"]}
+      sx={{
+        bgcolor: "#f2f2f2",
+        borderRadius: 2,
+        marginBottom: 2,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        overflow: "hidden",
+        position: "relative",
+      }}
     >
-      {successId !== user["User/GroupID"] && (
-        <ListItemText
-          secondaryTypographyProps={{
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-          }}
-          primary={user.LineDisplayName}
-          secondary={
-            sendingId === user["User/GroupID"]
-              ? "Sending reminder..."
-              : user["User/GroupID"]
-          }
-        />
-      )}
+      <ListItemButton
+        sx={{ justifyContent: "space-evenly", gap: 3, width: "100%" }}
+        disabled={sendingId === user["User/GroupID"]}
+        onClick={() => onTriggerReminder(user["User/GroupID"])}
+      >
+        {successId !== user["User/GroupID"] && (
+          <ListItemText
+            secondaryTypographyProps={{
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+            }}
+            primary={user.LineDisplayName}
+            secondary={
+              sendingId === user["User/GroupID"]
+                ? "Sending reminder..."
+                : user["User/GroupID"]
+            }
+          />
+        )}
 
-      {successId === user["User/GroupID"] && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <Box
-            display="flex"
-            justifyContent="center"
-            gap={1}
-            paddingTop={2}
-            paddingBottom={2}
-            width="100%"
+        {successId === user["User/GroupID"] && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
           >
-            <Typography>Sent</Typography>
-            <CheckCircle color="primary" />
-          </Box>
-        </motion.div>
+            <Box
+              display="flex"
+              justifyContent="center"
+              gap={1}
+              paddingTop={2}
+              paddingBottom={2}
+              width="100%"
+            >
+              <Typography>Sent</Typography>
+              <CheckCircle color="primary" />
+            </Box>
+          </motion.div>
+        )}
+      </ListItemButton>
+      {sendingId === user["User/GroupID"] && (
+        <Box width="100%">
+          <LinearProgress />
+        </Box>
       )}
-    </ListItemButton>
-    {sendingId === user["User/GroupID"] && (
-      <Box width="100%">
-        <LinearProgress />
-      </Box>
-    )}
-  </ListItem>
+    </ListItem>
+  </motion.div>
 )

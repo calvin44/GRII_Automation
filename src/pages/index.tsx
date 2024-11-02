@@ -4,11 +4,11 @@ import { Header } from "@/components/header"
 import { Scripture } from "@/components/scripture"
 import { TargetUserList } from "@/components/targetUserList"
 import { FeatureSelect } from "@/components/featureSelect"
-import { useSelectFeature } from "@/customHook/useSelectFeature"
 import { DriveFileList } from "@/components/driveFileList"
+import { useFeatureSelect } from "@/customHook/useSelectFeature"
 
 export default function Home() {
-  const { selectedFeature, handleFeatureSelect } = useSelectFeature()
+  const { selectedFeature, handleFeatureSelect } = useFeatureSelect()
   return (
     <Box
       height="100%"

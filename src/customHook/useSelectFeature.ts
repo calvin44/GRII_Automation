@@ -1,20 +1,23 @@
-import { FeatureSelectProps } from "@/components/featureSelect"
-import { useCallback, useState } from "react"
+import { useState, useEffect } from "react"
 
-export const useSelectFeature = () => {
+type FeatureType = Feature
+
+export const useFeatureSelect = () => {
   const [selectedFeature, setSelectedFeature] =
-    useState<FeatureSelectProps["feature"]>("reminder")
+    useState<FeatureType>("reminder")
 
-  const handleFeatureSelect = useCallback(
-    (feat: FeatureSelectProps["feature"]) => {
-      if (selectedFeature === feat) return
-      setSelectedFeature(feat)
-    },
-    [selectedFeature]
-  )
+  useEffect(() => {
+    // This will only run on the client side
+    const savedFeature = localStorage.getItem("feature") as FeatureType | null
+    if (savedFeature) {
+      setSelectedFeature(savedFeature)
+    }
+  }, [])
 
-  return {
-    selectedFeature,
-    handleFeatureSelect,
+  const handleFeatureSelect = (newFeature: FeatureType) => {
+    setSelectedFeature(newFeature)
+    localStorage.setItem("feature", newFeature)
   }
+
+  return { selectedFeature, handleFeatureSelect }
 }
