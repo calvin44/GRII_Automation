@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 import { Scripture } from "@/components/scripture"
 import { TargetUserList } from "@/components/targetUserList"
 import { FeatureSelect } from "@/components/featureSelect"
-import { DriveFileList } from "@/components/driveFileList"
+import { ListLagu } from "@/components/listLagu"
 import { useFeatureSelect } from "@/customHook/useSelectFeature"
 
 export default function Home() {
@@ -40,7 +40,7 @@ export default function Home() {
           handleFeatureSelect={handleFeatureSelect}
         />
         {selectedFeature === "reminder" && <TargetUserList />}
-        {selectedFeature === "laguKU" && <DriveFileList />}
+        {selectedFeature === "laguKU" && <ListLagu />}
       </Box>
     </Box>
   )

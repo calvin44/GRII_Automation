@@ -1,6 +1,12 @@
 import { CustomList } from "./customList"
 import { useCallback, useEffect, useState } from "react"
-import { ListItem, ListItemButton, ListItemText } from "@mui/material"
+import {
+  Box,
+  LinearProgress,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material"
 import { useDisplayDialog } from "@/customHook/useDisplayDialog"
 import { ErrorDialog } from "./errorDialog"
 import { PictureAsPdf } from "@mui/icons-material"
@@ -8,9 +14,10 @@ import { sortFilesByDate } from "@/utils/sortDate"
 import { Loading } from "./loading"
 import { motion } from "framer-motion"
 
-interface DriveFileListProps {}
+interface ListLaguProps {}
 
-export const DriveFileList: React.FC<DriveFileListProps> = () => {
+export const ListLagu: React.FC<ListLaguProps> = () => {
+  const [loadingId, setLoadingId] = useState<string>("")
   const [fileList, setFileList] = useState<DriveFileList[]>([])
   const { openDialog: showErrorDialog, ...errorDialogProps } =
     useDisplayDialog()
@@ -23,11 +30,11 @@ export const DriveFileList: React.FC<DriveFileListProps> = () => {
       const data = await response.json()
       return data as DriveFileList[]
     } catch (err) {
-      console.error("Error:", err)
+      console.error("Error fetching files:", err)
       showErrorDialog()
       return []
     }
-  }, [])
+  }, [showErrorDialog])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,18 +45,57 @@ export const DriveFileList: React.FC<DriveFileListProps> = () => {
     fetchData()
   }, [fetchTargetUser])
 
+  const downloadLagu = useCallback(
+    async (fileId: string) => {
+      if (!fileId) {
+        showErrorDialog()
+        return
+      }
+      setLoadingId(fileId)
+      try {
+        const response = await fetch("/api/downloadLagu", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fileId }),
+        })
+
+        if (!response.ok) throw new Error("Failed to fetch the file")
+
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+
+        const contentDisposition = response.headers.get("Content-Disposition")
+        const filenameMatch = contentDisposition?.match(/filename="(.+?)"/)
+        a.download = filenameMatch ? filenameMatch[1] : "downloaded-file"
+        a.href = url
+
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        window.URL.revokeObjectURL(url)
+      } catch (err) {
+        console.error("Error downloading file:", err)
+        showErrorDialog()
+      } finally {
+        setLoadingId("")
+      }
+    },
+    [showErrorDialog]
+  )
+
   return (
     <CustomList title="File List">
       {fileList.length === 0 && <Loading />}
       {fileList.map((file) => (
         <motion.div
+          key={file.id}
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
           <ListItem
             disablePadding
-            key={file.id}
             sx={{
               bgcolor: "#f2f2f2",
               borderRadius: 2,
@@ -63,6 +109,7 @@ export const DriveFileList: React.FC<DriveFileListProps> = () => {
           >
             <ListItemButton
               sx={{ justifyContent: "space-evenly", gap: 3, width: "100%" }}
+              onClick={() => downloadLagu(file.id)}
             >
               <PictureAsPdf color="primary" fontSize="large" />
               <ListItemText
@@ -74,6 +121,11 @@ export const DriveFileList: React.FC<DriveFileListProps> = () => {
                 secondary="Click to Download"
               />
             </ListItemButton>
+            {loadingId === file.id && (
+              <Box width="100%">
+                <LinearProgress />
+              </Box>
+            )}
           </ListItem>
         </motion.div>
       ))}
