@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { messagingApi, WebhookEvent, WebhookRequestBody } from "@line/bot-sdk"
-import { customPostRequest } from "@/utils/customFetch"
-import { getDomainURL } from "@/utils"
+import { customPostRequest, getDomainURL } from "@/utils/backend"
 
 interface Response {
   message?: string

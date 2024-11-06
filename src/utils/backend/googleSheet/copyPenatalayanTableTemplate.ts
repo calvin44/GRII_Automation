@@ -1,4 +1,4 @@
-import { offsetCellAddress } from "./googleSheetUtils"
+import { offsetCellAddress } from "./cellAddressOperation"
 
 function getTemplateSheetId(length: number) {
   if (length === 4) return "Template-4"
@@ -14,7 +14,7 @@ function getCellAndAddressMapping(startingCell: string, headerList: string[]) {
     }
     const addressAndValue = {
       address: currentCellAddress,
-      value: header
+      value: header,
     }
     cellAndValueMapping.push(addressAndValue)
   }

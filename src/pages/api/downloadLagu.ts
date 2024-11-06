@@ -1,4 +1,4 @@
-import { serviceAccountAuth } from "@/utils"
+import { serviceAccountAuth } from "@/utils/backend"
 import { google, drive_v3 } from "googleapis"
 import { NextApiRequest, NextApiResponse } from "next"
 

@@ -1,5 +1,5 @@
-import { serviceAccountAuth, SHEET_IDS } from "@/utils"
-import { convert2DArrayToObject } from "@/utils/convert2DArrayToObject"
+import { SHEET_IDS } from "@/constants"
+import { serviceAccountAuth, convert2DArrayToObject } from "@/utils/backend"
 import { GoogleSpreadsheet } from "google-spreadsheet"
 import { NextApiRequest, NextApiResponse } from "next"
 

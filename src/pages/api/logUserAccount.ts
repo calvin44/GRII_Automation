@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { GoogleSpreadsheet } from "google-spreadsheet"
-import { serviceAccountAuth, SHEET_IDS } from "@/utils"
+import { serviceAccountAuth } from "@/utils/backend"
+import { SHEET_IDS } from "@/constants"
 
 interface ResponseData {
   message: string

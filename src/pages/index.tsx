@@ -1,11 +1,13 @@
 import Head from "next/head"
 import { Box } from "@mui/material"
-import { Header } from "@/components/header"
-import { Scripture } from "@/components/scripture"
-import { TargetUserList } from "@/components/targetUserList"
-import { FeatureSelect } from "@/components/featureSelect"
-import { ListLagu } from "@/components/listLagu"
-import { useFeatureSelect } from "@/customHook/useSelectFeature"
+import {
+  FeatureSelect,
+  Header,
+  ListLagu,
+  Scripture,
+  TargetUserList,
+} from "@/components"
+import { useFeatureSelect } from "@/customHook"
 
 export default function Home() {
   const { selectedFeature, handleFeatureSelect } = useFeatureSelect()

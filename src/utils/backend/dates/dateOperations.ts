@@ -1,4 +1,4 @@
-import { months } from "@/constants/month"
+import { months } from "@/constants"
 
 function getNextMonthAndYear() {
   // Get the current date

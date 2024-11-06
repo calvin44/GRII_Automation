@@ -9,10 +9,11 @@ import {
 import { useCallback, useEffect, useState } from "react"
 import { CheckCircle } from "@mui/icons-material"
 import { motion } from "framer-motion"
-import { useDisplayDialog } from "@/customHook/useDisplayDialog"
-import { ErrorDialog } from "./errorDialog"
-import { CustomList } from "./customList"
-import { Loading } from "./loading"
+import { useDisplayDialog } from "@/customHook"
+
+import { CustomList } from "../wrappers"
+import { Loading } from "../utils"
+import { ErrorDialog } from "../dialogs"
 
 export const TargetUserList: React.FC = () => {
   const [allUsers, setAllUsers] = useState<TargetUser[]>([])

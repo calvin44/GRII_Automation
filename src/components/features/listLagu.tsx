@@ -1,4 +1,4 @@
-import { CustomList } from "./customList"
+import { CustomList } from "../wrappers/customList"
 import { useCallback, useEffect, useState } from "react"
 import {
   Box,
@@ -7,12 +7,13 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material"
-import { useDisplayDialog } from "@/customHook/useDisplayDialog"
-import { ErrorDialog } from "./errorDialog"
 import { PictureAsPdf } from "@mui/icons-material"
-import { sortFilesByDate } from "@/utils/sortDate"
-import { Loading } from "./loading"
+import { sortFilesByDate } from "@/utils/frontend"
 import { motion } from "framer-motion"
+
+import { useDisplayDialog } from "@/customHook"
+import { Loading } from "../utils"
+import { ErrorDialog } from "../dialogs"
 
 interface ListLaguProps {}
 

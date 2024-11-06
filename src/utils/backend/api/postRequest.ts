@@ -1,4 +1,4 @@
-async function customPostRequest<U>(url: string, postData: U) {
+async function sendPostRequest<U>(url: string, postData: U) {
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -17,4 +17,4 @@ async function customPostRequest<U>(url: string, postData: U) {
   }
 }
 
-export { customPostRequest }
+export { sendPostRequest as customPostRequest }
