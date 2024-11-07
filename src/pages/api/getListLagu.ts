@@ -1,7 +1,10 @@
-import { getListFileLagu, serviceAccountAuth } from "@/utils/backend"
+import {
+  authenticateWithOauth,
+  getListFileLagu,
+  getNewFileForDriveUpload,
+} from "@/utils/backend"
 import { NextApiRequest, NextApiResponse } from "next"
-import { google } from "googleapis"
-import { LAGU_FOLDER_ID } from "@/constants"
+import { getListLaguFromEmail } from "@/utils/backend"
 
 // Define a response type for successful results
 type SuccessResponse = FileInfoLagu[]
@@ -25,12 +28,19 @@ export default async function handler(
   }
 
   try {
-    // Authenticate with Google Drive API
-    const auth = serviceAccountAuth()
-    const drive = google.drive({ version: "v3", auth })
+    // authenticate
+    const auth = await authenticateWithOauth()
 
-    const fileInfos = await getListFileLagu(drive, LAGU_FOLDER_ID)
-    res.status(200).json(fileInfos)
+    // Check and save lagu to google drive
+    const listLagu = (await getListLaguFromEmail(auth)) ?? []
+
+    // Authenticate with Google Drive API
+    const laguDrive = await getListFileLagu(auth)
+
+    // get files to be uploaded to drive
+    const fileToBeUploaded = getNewFileForDriveUpload(listLagu, laguDrive)
+
+    res.status(200).json(laguDrive)
   } catch (error) {
     console.error("Error fetching files from Google Drive:", error)
     res.status(500).json({ message: "Failed to fetch files from Google Drive" })

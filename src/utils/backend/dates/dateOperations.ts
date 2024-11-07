@@ -71,6 +71,15 @@ function getCurrentMonthAndYear(monthOffset: number = 0): string {
   return `${currentMonth} ${currentYear}`
 }
 
+function getCurrentDateInfo() {
+  const currentDate = new Date()
+  return {
+    day: currentDate.getDate(),
+    month: currentDate.getMonth() + 1,
+    year: currentDate.getFullYear(),
+  }
+}
+
 function closestSundayDate() {
   const today = new Date()
   const dayOfWeek = today.getDay() // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
@@ -102,4 +111,5 @@ export {
   getNextMonthDatesForDay,
   getCurrentMonthAndYear,
   closestSundayDate,
+  getCurrentDateInfo,
 }

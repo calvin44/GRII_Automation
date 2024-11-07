@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Message } from "@line/bot-sdk"
-import { client } from "@/line/client"
+import { client } from "@/utils/backend/line/createLineClient"
 
 interface ResponseData {
   message: string

@@ -1,4 +1,4 @@
-interface DriveFileList {
+interface DriveFile {
   id: string
   name: string
 }

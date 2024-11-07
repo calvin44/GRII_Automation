@@ -3,11 +3,11 @@ import { GoogleSpreadsheet } from "google-spreadsheet"
 import {
   getTemplateSheetId,
   getNextMonthDatesForDay,
-  serviceAccountAuth,
   getNextMonthAndYear,
   getCellAndAddressMapping,
+  authenticateWithOauth,
 } from "@/utils/backend"
-import { client } from "@/line/client"
+import { client } from "@/utils/backend/line/createLineClient"
 import { SHEET_IDS } from "@/constants"
 
 interface ResponseData {
@@ -27,7 +27,7 @@ export default async function handler(
     const { lineUserId } = req.body as SendLineMessageRequestBody
 
     // log user data to sheet
-    const auth = serviceAccountAuth()
+    const auth = await authenticateWithOauth()
 
     // setup google sheet
     const doc = new GoogleSpreadsheet(googleSheetId, auth)

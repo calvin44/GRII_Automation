@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { GoogleSpreadsheet } from "google-spreadsheet"
-import { serviceAccountAuth } from "@/utils/backend"
 import { SHEET_IDS } from "@/constants"
+import { authenticateWithOauth } from "@/utils/backend"
 
 interface ResponseData {
   message: string
@@ -23,7 +23,7 @@ export default async function handler(
       return res.status(405).json({ message: "Only POST method allowed" })
     const userData = req.body as RequestBody
 
-    const auth = serviceAccountAuth()
+    const auth = await authenticateWithOauth()
     const doc = new GoogleSpreadsheet(googleSheetId, auth)
     await doc.loadInfo()
 

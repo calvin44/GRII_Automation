@@ -1,11 +1,14 @@
-import { drive_v3 } from "googleapis"
+import { LAGU_FOLDER_ID } from "@/constants"
+import { OAuth2Client } from "google-auth-library"
+import { google } from "googleapis"
 
-export async function getListFileLagu(drive: drive_v3.Drive, folderId: string) {
+export async function getListFileLagu(auth: OAuth2Client) {
+  const drive = google.drive({ version: "v3", auth })
   // Get files from the specified folder
   const response = await drive.files.list({
     includeItemsFromAllDrives: true,
     orderBy: "name",
-    q: `'${folderId}' in parents and trashed = false`,
+    q: `'${LAGU_FOLDER_ID}' in parents and trashed = false`,
     supportsAllDrives: true,
   })
 
@@ -18,5 +21,3 @@ export async function getListFileLagu(drive: drive_v3.Drive, folderId: string) {
 
   return fileInfos
 }
-
-export function checkLaguAvailableByName() {}

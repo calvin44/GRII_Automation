@@ -1,5 +1,5 @@
 import { SHEET_IDS } from "@/constants"
-import { serviceAccountAuth, convert2DArrayToObject } from "@/utils/backend"
+import { authenticateWithOauth, convert2DArrayToObject } from "@/utils/backend"
 import { GoogleSpreadsheet } from "google-spreadsheet"
 import { NextApiRequest, NextApiResponse } from "next"
 
@@ -29,7 +29,7 @@ export default async function handler(
     }
 
     // Authenticate with Google Sheets API
-    const auth = serviceAccountAuth()
+    const auth = await authenticateWithOauth()
     const doc = new GoogleSpreadsheet(googleSheetId, auth)
 
     // Load sheet info

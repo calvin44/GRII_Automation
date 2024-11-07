@@ -1,14 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { GoogleSpreadsheet } from "google-spreadsheet"
 import {
-  serviceAccountAuth,
   getCurrentMonthAndYear,
   closestSundayDate,
   getTemplate,
   convertTableToObject,
+  authenticateWithOauth,
 } from "@/utils/backend"
 import { months, SHEET_IDS } from "@/constants"
-import { client } from "@/line/client"
+import { client } from "@/utils/backend/line/createLineClient"
 
 interface ResponseData {
   message: string
@@ -33,7 +33,7 @@ export default async function handler(
         .json({ message: "Invalid request, lineUserIds is required" })
     }
 
-    const auth = serviceAccountAuth()
+    const auth = await authenticateWithOauth()
     const doc = new GoogleSpreadsheet(googleSheetId, auth)
     await doc.loadInfo()
 

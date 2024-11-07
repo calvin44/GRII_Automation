@@ -1,5 +1,5 @@
-import { serviceAccountAuth } from "@/utils/backend"
-import { google, drive_v3 } from "googleapis"
+import { authenticateWithOauth } from "@/utils/backend"
+import { google } from "googleapis"
 import { NextApiRequest, NextApiResponse } from "next"
 
 type DriveFileMetadata = {
@@ -26,7 +26,7 @@ export default async function handler(
   }
 
   try {
-    const auth = serviceAccountAuth()
+    const auth = await authenticateWithOauth()
     const drive = google.drive({ version: "v3", auth })
 
     // Fetch the file metadata to get the file name

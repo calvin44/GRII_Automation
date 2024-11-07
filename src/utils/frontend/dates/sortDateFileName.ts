@@ -13,7 +13,7 @@ const monthMap: Record<string, string> = {
   Desember: "December",
 }
 
-function sortFilesByDate(files: DriveFileList[]): DriveFileList[] {
+function sortFilesByDate(files: DriveFile[]): DriveFile[] {
   return files.sort((a, b) => {
     const parseDate = (name: string) => {
       const [day, month, year] =

@@ -19,17 +19,17 @@ interface ListLaguProps {}
 
 export const ListLagu: React.FC<ListLaguProps> = () => {
   const [loadingId, setLoadingId] = useState<string>("")
-  const [fileList, setFileList] = useState<DriveFileList[]>([])
+  const [fileList, setFileList] = useState<DriveFile[]>([])
   const { openDialog: showErrorDialog, ...errorDialogProps } =
     useDisplayDialog()
 
-  const fetchTargetUser = useCallback(async (): Promise<DriveFileList[]> => {
+  const fetchTargetUser = useCallback(async (): Promise<DriveFile[]> => {
     try {
       const response = await fetch("/api/getListLagu")
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`)
       const data = await response.json()
-      return data as DriveFileList[]
+      return data as DriveFile[]
     } catch (err) {
       console.error("Error fetching files:", err)
       showErrorDialog()

@@ -1,5 +1,3 @@
-import { JWT } from "google-auth-library"
-
 function offsetCellAddress(
   cellAddress: string,
   columnOffset: number,
@@ -39,16 +37,4 @@ function getRowColumnIndices(cellAddress: string): {
   return { row, column: columnNumber - 1 }
 }
 
-function serviceAccountAuth() {
-  const auth = new JWT({
-    email: process.env.GOOGLE_SERVICE_EMAIL,
-    key: process.env.GOOGLE_PRIVATE_KEY,
-    scopes: [
-      "https://www.googleapis.com/auth/spreadsheets",
-      "https://www.googleapis.com/auth/drive.readonly",
-    ],
-  })
-  return auth
-}
-
-export { offsetCellAddress, getRowColumnIndices, serviceAccountAuth }
+export { offsetCellAddress, getRowColumnIndices }
