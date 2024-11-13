@@ -22,7 +22,8 @@ function sortFilesByDate(files: DriveFile[]): DriveFile[] {
       return new Date(`${year}-${englishMonth}-${day}`)
     }
 
-    return parseDate(a.name).getTime() - parseDate(b.name).getTime()
+    // Change this line to sort in descending order
+    return parseDate(b.name).getTime() - parseDate(a.name).getTime()
   })
 }
 

@@ -1,6 +1,7 @@
 import { OAuth2Client } from "google-auth-library"
 import { gmail_v1, google } from "googleapis"
 import { getCurrentDateInfo } from "../dates"
+import { fileLaguGmailAccount } from "@/constants"
 
 export async function getListLaguFromEmail(oauth2Client: OAuth2Client) {
   // authenticate gmail
@@ -12,8 +13,9 @@ export async function getListLaguFromEmail(oauth2Client: OAuth2Client) {
     const mailList = await gmail.users.messages.list({
       userId: "me",
       labelIds: ["INBOX"],
-      // q: `from:c_satyaloka@yahoo.com has:attachment after:${year}/${month}/01`,
-      q: `from:c_satyaloka@yahoo.com has:attachment after:2024/10/01`,
+      q: `from:${fileLaguGmailAccount} has:attachment after:${year}/${
+        month - 1
+      }/01`,
     })
     const messages = mailList.data.messages || []
 

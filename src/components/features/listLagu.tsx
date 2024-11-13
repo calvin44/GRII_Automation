@@ -7,7 +7,7 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material"
-import { PictureAsPdf } from "@mui/icons-material"
+import { PictureAsPdf, Search } from "@mui/icons-material"
 import { sortFilesByDate } from "@/utils/frontend"
 import { motion } from "framer-motion"
 
@@ -88,6 +88,7 @@ export const ListLagu: React.FC<ListLaguProps> = () => {
   return (
     <CustomList title="File List">
       {fileList.length === 0 && <Loading />}
+      {/* <Searchbar /> */} // To be implemented when needed
       {fileList.map((file) => (
         <motion.div
           key={file.id}
@@ -134,3 +135,8 @@ export const ListLagu: React.FC<ListLaguProps> = () => {
     </CustomList>
   )
 }
+
+// interface SearchBarProps extends TextFieldProps {}
+// const Searchbar: React.FC<SearchBarProps> = ({ ...props }) => {
+//   return <TextField type="text" size="small" fullWidth {...props} />
+// }

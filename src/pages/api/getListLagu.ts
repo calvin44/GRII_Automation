@@ -2,6 +2,7 @@ import {
   authenticateWithOauth,
   getListFileLagu,
   getNewFileForDriveUpload,
+  uploadFileLaguToDrive,
 } from "@/utils/backend"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getListLaguFromEmail } from "@/utils/backend"
@@ -28,21 +29,41 @@ export default async function handler(
   }
 
   try {
-    // authenticate
+    // Authenticate
     const auth = await authenticateWithOauth()
 
-    // Check and save lagu to google drive
+    // Retrieve Gmail attachments and existing Drive files
     const listLagu = (await getListLaguFromEmail(auth)) ?? []
-
-    // Authenticate with Google Drive API
     const laguDrive = await getListFileLagu(auth)
 
-    // get files to be uploaded to drive
+    // Determine files that need uploading
     const fileToBeUploaded = getNewFileForDriveUpload(listLagu, laguDrive)
 
-    res.status(200).json(laguDrive)
-  } catch (error) {
+    // Return if there are no files to upload
+    if (fileToBeUploaded.length === 0) {
+      return res.status(200).json(laguDrive)
+    }
+
+    // Upload files to Google Drive
+    const uploadResults = await Promise.allSettled(
+      fileToBeUploaded.map((file) => uploadFileLaguToDrive(auth, file))
+    )
+
+    // Log any failed uploads for debugging
+    const failedUploads = uploadResults.filter(
+      (result) => result.status === "rejected"
+    )
+    if (failedUploads.length > 0) {
+      console.error("Some files failed to upload:", failedUploads)
+    }
+
+    // Fetch and return the updated list of files
+    const newFileLaguList = await getListFileLagu(auth)
+    res.status(200).json(newFileLaguList)
+  } catch (error: unknown) {
     console.error("Error fetching files from Google Drive:", error)
-    res.status(500).json({ message: "Failed to fetch files from Google Drive" })
+    res.status(500).json({
+      message: "Failed to fetch files from Google Drive",
+    })
   }
 }
