@@ -21,8 +21,11 @@
     "googleapis": "^144.0.0",
     "next": "^14.2.15",
     "react": "^18",
+    "react-async-modal": "^0.2.0",
     "react-dom": "^18",
-    "styled-components": "^6.1.13"
+    "react-virtuoso": "^4.12.0",
+    "styled-components": "^6.1.13",
+    "use-async-modal": "^1.2.0"
   },
   "devDependencies": {
     "@types/node": "^20",

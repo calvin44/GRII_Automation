@@ -13,7 +13,8 @@ import { useDisplayDialog } from "@/customHook"
 
 import { CustomList } from "../wrappers"
 import { Loading } from "../utils"
-import { ErrorDialog } from "../dialogs"
+import { ConfirmSendDialog, ErrorDialog, Response } from "../dialogs"
+import useModal, { ModalContainer } from "use-async-modal"
 
 export const TargetUserList: React.FC = () => {
   const [allUsers, setAllUsers] = useState<TargetUser[]>([])
@@ -36,6 +37,13 @@ export const TargetUserList: React.FC = () => {
     }
   }, [])
 
+  const showSendConfirmDialog = useModal({
+    Component: ConfirmSendDialog,
+    closeOnEsc: true,
+    closeOnOverlayClick: true,
+    defaultResolved: Response.NO,
+  })
+
   useEffect(() => {
     const fetchData = async () => {
       const usersData = await fetchTargetUser()
@@ -46,6 +54,8 @@ export const TargetUserList: React.FC = () => {
 
   const triggerReminder = useCallback(
     async (userId: string) => {
+      const confirmSend = await showSendConfirmDialog()
+      if (confirmSend === Response.NO) return
       try {
         setSendingId(userId)
         const response = await fetch("/api/remindPelayanan", {
@@ -103,6 +113,7 @@ const UserListItem: React.FC<UserListItemProps> = ({
     animate={{ opacity: 1, scale: 1 }}
     transition={{ duration: 0.5 }}
   >
+    <ModalContainer />
     <ListItem
       disablePadding
       key={user["User/GroupID"]}

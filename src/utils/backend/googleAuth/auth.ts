@@ -1,10 +1,9 @@
-import { redirectUri } from "@/constants"
 import { google } from "googleapis"
 
 export const oauth2Client = new google.auth.OAuth2(
   process.env.OAUTH2_CLIENT_ID,
   process.env.OAUTH2_CLIENT_SECRET,
-  redirectUri
+  process.env.REDIRECT_URI
 )
 
 export async function refreshAccessToken() {

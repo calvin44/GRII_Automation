@@ -1,6 +1,6 @@
 import { LAGU_FOLDER_ID } from "@/constants"
 import { OAuth2Client } from "google-auth-library"
-import { google } from "googleapis"
+import { drive_v3, google } from "googleapis"
 import { Readable } from "stream"
 
 // Helper function to upload a single file
