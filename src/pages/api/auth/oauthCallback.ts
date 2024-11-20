@@ -1,9 +1,21 @@
 import { oauth2Client } from "@/utils/backend"
 import { NextApiRequest, NextApiResponse } from "next"
 
+interface SuccessResponse {
+  status: string
+  accessToken: string
+  refreshToken: string
+}
+
+interface ErrorResponse {
+  error: string
+}
+
+type Response = SuccessResponse | ErrorResponse
+
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<Response>
 ) {
   const { code } = req.query // The code is returned by Google as a query parameter
 
@@ -18,12 +30,14 @@ export default async function handler(
     // Set the credentials on the OAuth client
     oauth2Client.setCredentials(tokens)
 
-    // Store tokens securely (e.g., in a database or in-memory storage)
-    console.log("Access Token:", tokens.access_token)
-    console.log("Refresh Token:", tokens.refresh_token)
+    const { access_token: accessToken, refresh_token: refreshToken } = tokens
 
     // Respond with success or some indication of a successful login
-    res.status(200).json({ message: "Authorization successful" })
+    res.status(200).json({
+      status: "Authorization successful",
+      accessToken: accessToken || "",
+      refreshToken: refreshToken || "",
+    })
   } catch (error) {
     console.error("Error exchanging code for tokens:", error)
     res.status(500).json({ error: "Internal server error" })
