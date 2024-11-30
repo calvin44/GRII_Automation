@@ -1,4 +1,4 @@
-import { oauth2Client } from "@/utils/backend"
+import { oauth2Client, updateRefreshToken } from "@/utils/backend"
 import { NextApiRequest, NextApiResponse } from "next"
 
 interface SuccessResponse {
@@ -32,14 +32,18 @@ export default async function handler(
 
     const { access_token: accessToken, refresh_token: refreshToken } = tokens
 
-    // Respond with success or some indication of a successful login
-    res.status(200).json({
-      status: "Authorization successful",
-      accessToken: accessToken || "",
-      refreshToken: refreshToken || "",
-    })
+    if (!refreshToken) {
+      //  Redirect to the root URL after successful authentication
+      return res.redirect(302, "/")
+    }
+
+    // Update refresh token to Firestore
+    await updateRefreshToken(refreshToken)
+
+    //  Redirect to the root URL after successful authentication
+    return res.redirect(302, "/")
   } catch (error) {
     console.error("Error exchanging code for tokens:", error)
-    res.status(500).json({ error: "Internal server error" })
+    return res.status(500).json({ error: "Internal server error" })
   }
 }
