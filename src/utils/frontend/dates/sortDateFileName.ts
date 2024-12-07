@@ -16,13 +16,15 @@ const monthMap: Record<string, string> = {
 function sortFilesByDate(files: DriveFile[]): DriveFile[] {
   return files.sort((a, b) => {
     const parseDate = (name: string) => {
-      const [day, month, year] =
-        name.match(/(\d{1,2}) (\w+) (\d{4})/)?.slice(1) || []
+      const match = name.match(/(\d{1,2}) (\w+) (\d{4})/)
+      if (!match) return new Date(0) // Invalid date if the format doesn't match
+      const [day, month, year] = match.slice(1)
       const englishMonth = monthMap[month]
-      return new Date(`${year}-${englishMonth}-${day}`)
+      if (!englishMonth) return new Date(0) // Invalid date if the month is not in the map
+      return new Date(`${year}-${englishMonth}-${day.padStart(2, "0")}`)
     }
 
-    // Change this line to sort in descending order
+    // Sort in descending order (newest first)
     return parseDate(b.name).getTime() - parseDate(a.name).getTime()
   })
 }
