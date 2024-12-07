@@ -19,6 +19,7 @@ export default async function handler(
     // Generate the auth URL with required scopes
     const authUrl = oauth2Client.generateAuthUrl({
       access_type: "offline",
+      prompt: "consent",
       scope: [
         // Gmail Read-Only
         "https://www.googleapis.com/auth/gmail.readonly",

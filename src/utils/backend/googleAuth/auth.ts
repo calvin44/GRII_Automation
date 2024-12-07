@@ -68,7 +68,11 @@ export async function updateRefreshToken(
     }
 
     // Reference to the specific document in the 'googleAuthRefreshToken' collection
-    const tokenDocRef = doc(db, "googleAuthRefreshToken", "singleton") // Use a fixed ID like 'singleton'
+    const tokenDocRef = doc(
+      db,
+      "googleAuthRefreshToken",
+      "KLeIov3XbodCdJEwQV2h"
+    ) // Use a fixed ID like 'singleton'
 
     // Update the 'refreshToken' field in the document
     await updateDoc(tokenDocRef, { refreshToken: newRefreshToken })
