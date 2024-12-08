@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   LinearProgress,
   ListItem,
   ListItemButton,
@@ -16,7 +17,7 @@ import { Loading } from "../utils"
 import { ConfirmSendDialog, ErrorDialog, Response } from "../dialogs"
 import useModal, { ModalContainer } from "use-async-modal"
 
-export const TargetUserList: React.FC = () => {
+export const RemindUser: React.FC = () => {
   const [allUsers, setAllUsers] = useState<TargetUser[]>([])
   const [sendingId, setSendingId] = useState("")
   const [successId, setSuccessId] = useState("")

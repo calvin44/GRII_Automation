@@ -1,12 +1,16 @@
-import { Box, List, Typography } from "@mui/material"
+import { Box, List, ListProps, Typography } from "@mui/material"
 import { ReactNode } from "react"
 
-interface CustomListProps {
+interface CustomListProps extends ListProps {
   children: ReactNode
   title: string
 }
 
-export const CustomList: React.FC<CustomListProps> = ({ children, title }) => {
+export const CustomList: React.FC<CustomListProps> = ({
+  children,
+  title,
+  ...props
+}) => {
   return (
     <Box
       height="100%"
@@ -19,8 +23,10 @@ export const CustomList: React.FC<CustomListProps> = ({ children, title }) => {
         {title}
       </Typography>
 
-      <Box sx={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
-        <List sx={{ overflowY: "auto", height: "100%" }}>{children}</List>
+      <Box sx={{ flex: 1, overflow: "hidden" }}>
+        <List sx={{ overflowY: "auto", height: "100%" }} {...props}>
+          {children}
+        </List>
       </Box>
     </Box>
   )

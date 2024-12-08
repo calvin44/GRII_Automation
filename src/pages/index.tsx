@@ -1,11 +1,12 @@
 import Head from "next/head"
 import { Box } from "@mui/material"
 import {
+  CreateTemplate,
   FeatureSelect,
   Header,
   ListLagu,
+  RemindUser,
   Scripture,
-  TargetUserList,
 } from "@/components"
 import { useFeatureSelect } from "@/customHook"
 
@@ -41,7 +42,8 @@ export default function Home() {
           feature={selectedFeature}
           handleFeatureSelect={handleFeatureSelect}
         />
-        {selectedFeature === "reminder" && <TargetUserList />}
+        {selectedFeature === "reminder" && <RemindUser />}
+        {selectedFeature === "createTemplate" && <CreateTemplate />}
         {selectedFeature === "laguKU" && <ListLagu />}
       </Box>
     </Box>

@@ -7,7 +7,6 @@ import {
   getCellAndAddressMapping,
   authenticateWithOauth,
 } from "@/utils/backend"
-import { client } from "@/utils/backend/line/createLineClient"
 import { SHEET_IDS } from "@/constants"
 
 interface ResponseData {
@@ -24,14 +23,20 @@ export default async function handler(
     if (req.method !== "POST")
       return res.status(405).json({ message: "Only POST method allowed" })
 
-    const { lineUserId } = req.body as SendLineMessageRequestBody
-
     // log user data to sheet
     const auth = await authenticateWithOauth()
 
     // setup google sheet
     const doc = new GoogleSpreadsheet(googleSheetId, auth)
     await doc.loadInfo()
+
+    // Check for all uneeded sheet and delete them
+    for (const sheet of doc.sheetsByIndex) {
+      if (sheet.title.toLowerCase().includes("copy of")) {
+        console.log(`Deleting sheet: ${sheet.title}`)
+        await sheet.delete()
+      }
+    }
 
     // table header date information
     const PNHeaderList = getNextMonthDatesForDay("Sunday")
@@ -46,7 +51,15 @@ export default async function handler(
     const titleMonth = getNextMonthAndYear()
 
     const newSheetName = `${titleMonth}-AG`
+
+    // Check if sheet is created
+    const newCreatedSheet = doc.sheetsByTitle[newSheetName]
+    if (newCreatedSheet) {
+      return res.status(200).json({ message: `"${newSheetName}" is created!` })
+    }
+
     const newSheet = await templateSheet.duplicate()
+
     await newSheet.updateProperties({ title: newSheetName })
 
     // load all cells -- Entire range
@@ -117,19 +130,6 @@ export default async function handler(
 
     const sheetLastIndex = Object.keys(doc.sheetsByTitle).length
     await newSheet.updateProperties({ hidden: false, index: sheetLastIndex })
-
-    // notify user using push message
-    if (lineUserId) {
-      await client.pushMessage({
-        to: lineUserId,
-        messages: [
-          {
-            type: "text",
-            text: "Penatalayan googleSheet template generated!",
-          },
-        ],
-      })
-    }
 
     res.status(200).json({ message: "Template created!" })
   } catch (err) {

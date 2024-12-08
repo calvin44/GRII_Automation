@@ -4,7 +4,6 @@ import { Box, Typography } from "@mui/material"
 export const Header = () => {
   return (
     <Box display="flex" alignItems="flex-end">
-      <DateRangeOutlined fontSize="large" sx={{ color: "#797979" }} />
       <Typography
         color="#797979"
         variant="h5"
@@ -14,7 +13,6 @@ export const Header = () => {
       >
         Reminder
       </Typography>
-      <AccessAlarmOutlined fontSize="large" sx={{ color: "#797979" }} />
     </Box>
   )
 }

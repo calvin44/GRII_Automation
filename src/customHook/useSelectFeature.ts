@@ -1,3 +1,4 @@
+import { SelectChangeEvent } from "@mui/material"
 import { useState, useEffect } from "react"
 
 type FeatureType = Feature
@@ -14,9 +15,10 @@ export const useFeatureSelect = () => {
     }
   }, [])
 
-  const handleFeatureSelect = (newFeature: FeatureType) => {
-    setSelectedFeature(newFeature)
-    localStorage.setItem("feature", newFeature)
+  const handleFeatureSelect = (event: SelectChangeEvent<Feature>) => {
+    const selectedFeature = event.target.value as Feature
+    setSelectedFeature(selectedFeature)
+    localStorage.setItem("feature", selectedFeature)
   }
 
   return { selectedFeature, handleFeatureSelect }

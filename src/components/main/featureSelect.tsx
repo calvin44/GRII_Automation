@@ -1,8 +1,8 @@
-import { ToggleButton, ToggleButtonGroup } from "@mui/material"
+import { MenuItem, Select, SelectChangeEvent } from "@mui/material"
 
 export interface FeatureSelectProps {
   feature: Feature
-  handleFeatureSelect: (feat: FeatureSelectProps["feature"]) => void
+  handleFeatureSelect: (event: SelectChangeEvent<Feature>) => void
 }
 
 export const FeatureSelect: React.FC<FeatureSelectProps> = ({
@@ -10,19 +10,16 @@ export const FeatureSelect: React.FC<FeatureSelectProps> = ({
   handleFeatureSelect,
 }) => {
   return (
-    <ToggleButtonGroup fullWidth exclusive color="standard" value={feature}>
-      <ToggleButton
-        onClick={() => handleFeatureSelect("reminder")}
-        value="reminder"
-      >
-        Reminder
-      </ToggleButton>
-      <ToggleButton
-        onClick={() => handleFeatureSelect("laguKU")}
-        value="laguKU"
-      >
-        Lagu KU
-      </ToggleButton>
-    </ToggleButtonGroup>
+    <Select
+      value={feature}
+      onChange={handleFeatureSelect}
+      sx={{
+        borderRadius: 3,
+      }}
+    >
+      <MenuItem value="reminder">Reminder</MenuItem>
+      <MenuItem value="createTemplate">Add next month table</MenuItem>
+      <MenuItem value="laguKU">Download Lagu KU</MenuItem>
+    </Select>
   )
 }
