@@ -10,7 +10,6 @@ import {
 import { PictureAsPdf, Search } from "@mui/icons-material"
 import { sortFilesByDate } from "@/utils/frontend"
 import { motion } from "framer-motion"
-
 import { useDisplayDialog } from "@/customHook"
 import { Loading } from "../utils"
 import { ErrorDialog } from "../dialogs"
@@ -23,7 +22,7 @@ export const ListLagu: React.FC<ListLaguProps> = () => {
   const { openDialog: showErrorDialog, ...errorDialogProps } =
     useDisplayDialog()
 
-  const fetchTargetUser = useCallback(async (): Promise<DriveFile[]> => {
+  const fetchLagu = useCallback(async (): Promise<DriveFile[]> => {
     try {
       const response = await fetch("/api/getListLagu")
       if (!response.ok)
@@ -39,12 +38,12 @@ export const ListLagu: React.FC<ListLaguProps> = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const fetchedFileList = await fetchTargetUser()
+      const fetchedFileList = await fetchLagu()
       const sortedFileList = sortFilesByDate(fetchedFileList)
       setFileList(sortedFileList)
     }
     fetchData()
-  }, [fetchTargetUser])
+  }, [fetchLagu])
 
   const downloadLagu = useCallback(
     async (fileId: string) => {

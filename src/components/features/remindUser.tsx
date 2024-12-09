@@ -141,11 +141,7 @@ const UserListItem: React.FC<UserListItemProps> = ({
               overflow: "hidden",
             }}
             primary={user.LineDisplayName}
-            secondary={
-              sendingId === user["User/GroupID"]
-                ? "Sending reminder..."
-                : user["User/GroupID"]
-            }
+            secondary={user.Description}
           />
         )}
 

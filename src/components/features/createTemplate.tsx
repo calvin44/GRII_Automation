@@ -62,11 +62,14 @@ export const CreateTemplate: React.FC = () => {
             gap: 3,
             borderRadius: 2,
             bgcolor: "#f2f2f2",
-            textAlign: "center",
+            textAlign: "left",
           }}
           disabled={loading}
         >
-          <ListItemText>Generate New Table</ListItemText>
+          <ListItemText
+            primary="Generate Month Table"
+            secondary="Generate a table in Penatalayan GoogleSheet"
+          />
         </ListItemButton>
         {loading && (
           <LinearProgress
