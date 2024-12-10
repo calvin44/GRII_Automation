@@ -27,6 +27,10 @@ export default async function handler(
         "https://www.googleapis.com/auth/spreadsheets",
         // Google Drive Full Access
         "https://www.googleapis.com/auth/drive",
+        // Access to User's Email Address
+        "https://www.googleapis.com/auth/userinfo.email",
+        // (Optional) Access to User's Basic Profile Information
+        "https://www.googleapis.com/auth/userinfo.profile",
       ],
     })
 

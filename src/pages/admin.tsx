@@ -9,19 +9,34 @@ import {
   Typography,
 } from "@mui/material"
 import { useRouter } from "next/router"
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import { motion } from "framer-motion"
 
+interface AdminQueryParams {
+  Authorized?: string
+}
+
+interface AuthResponse {
+  authURL: string
+}
+
 const Admin = () => {
-  const { push } = useRouter()
+  const { query } = useRouter()
+  const { Authorized } = query as AdminQueryParams
+
+  useEffect(() => {
+    if (Authorized === "false") {
+      alert("User is not authorized")
+    }
+  }, [Authorized])
+
   const handleAuthorize = useCallback(async () => {
     try {
       const response = await fetch("/api/auth/getAuthCodeUrl")
-      const { authURL } = await response.json()
+      const data: AuthResponse = await response.json()
 
-      if (typeof authURL === "string") {
-        // Redirect to the external authentication provider
-        window.location.href = authURL
+      if (typeof data.authURL === "string") {
+        window.location.href = data.authURL
       } else {
         console.error("Invalid response: authURL is missing or not a string.")
       }
