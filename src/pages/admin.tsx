@@ -11,6 +11,7 @@ import {
 import { useRouter } from "next/router"
 import { useCallback, useEffect } from "react"
 import { motion } from "framer-motion"
+import { Header } from "@/components"
 
 interface AdminQueryParams {
   Authorized?: string
@@ -66,15 +67,9 @@ const Admin = () => {
         bgcolor="white"
         padding={4}
         borderRadius={3}
+        height="100%"
       >
-        <Typography
-          color="#797979"
-          variant="h5"
-          textAlign="center"
-          sx={{ fontWeight: "bold" }}
-        >
-          Admin Page
-        </Typography>
+        <Header />
         <List
           sx={{
             width: "100%",
@@ -101,7 +96,10 @@ const Admin = () => {
                 <ListItemIcon>
                   <Login />
                 </ListItemIcon>
-                <ListItemText primary="Authorize" />
+                <ListItemText
+                  primary="Authorize"
+                  secondary="Authorize by GRII Taipei Google Account"
+                />
               </ListItemButton>
             </ListItem>
           </motion.div>
@@ -118,7 +116,10 @@ const Admin = () => {
                 <ListItemIcon>
                   <Home />
                 </ListItemIcon>
-                <ListItemText primary="Back to Main Page" />
+                <ListItemText
+                  primary="Back to Main Page"
+                  secondary="Navigate back to main page"
+                />
               </ListItemButton>
             </ListItem>
           </motion.div>
