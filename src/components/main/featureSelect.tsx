@@ -1,4 +1,6 @@
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material"
+import { useRouter } from "next/router"
+import { useCallback } from "react"
 
 export interface FeatureSelectProps {
   feature: Feature
@@ -9,6 +11,10 @@ export const FeatureSelect: React.FC<FeatureSelectProps> = ({
   feature,
   handleFeatureSelect,
 }) => {
+  const { push } = useRouter()
+  const navigateToAdmin = useCallback(() => {
+    push("/admin")
+  }, [])
   return (
     <Select
       value={feature}
@@ -20,6 +26,11 @@ export const FeatureSelect: React.FC<FeatureSelectProps> = ({
       <MenuItem value="reminder">Reminder</MenuItem>
       <MenuItem value="createTemplate">Add next month table</MenuItem>
       <MenuItem value="laguKU">Download Lagu KU</MenuItem>
+
+      {/* Page navigation */}
+      <MenuItem onClick={navigateToAdmin} value="admin">
+        Admin Page
+      </MenuItem>
     </Select>
   )
 }

@@ -1,1 +1,1 @@
-type Feature = "reminder" | "laguKU" | "createTemplate"
+type Feature = "reminder" | "laguKU" | "createTemplate" | "admin"

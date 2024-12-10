@@ -17,6 +17,7 @@ export const useFeatureSelect = () => {
 
   const handleFeatureSelect = (event: SelectChangeEvent<Feature>) => {
     const selectedFeature = event.target.value as Feature
+    if (selectedFeature === "admin") return
     setSelectedFeature(selectedFeature)
     localStorage.setItem("feature", selectedFeature)
   }

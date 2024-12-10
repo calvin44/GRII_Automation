@@ -1,4 +1,4 @@
-import { Login } from "@mui/icons-material"
+import { Home, Login } from "@mui/icons-material"
 import {
   Box,
   List,
@@ -23,12 +23,16 @@ interface AuthResponse {
 const Admin = () => {
   const { query } = useRouter()
   const { Authorized } = query as AdminQueryParams
+  const { replace } = useRouter()
 
   useEffect(() => {
     if (Authorized === "false") {
       alert("User is not authorized")
     }
   }, [Authorized])
+  const navigateToHome = useCallback(() => {
+    replace("/")
+  }, [])
 
   const handleAuthorize = useCallback(async () => {
     try {
@@ -75,6 +79,9 @@ const Admin = () => {
           sx={{
             width: "100%",
             bgcolor: "white",
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
           }}
           aria-label="contacts"
         >
@@ -85,13 +92,33 @@ const Admin = () => {
           >
             <ListItem
               disablePadding
-              sx={{ bgcolor: "#f2f2f2", borderRadius: 3 }}
+              sx={{
+                bgcolor: "#f2f2f2",
+                borderRadius: 3,
+              }}
             >
               <ListItemButton onClick={handleAuthorize}>
                 <ListItemIcon>
                   <Login />
                 </ListItemIcon>
                 <ListItemText primary="Authorize" />
+              </ListItemButton>
+            </ListItem>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ListItem
+              disablePadding
+              sx={{ bgcolor: "#f2f2f2", borderRadius: 3 }}
+            >
+              <ListItemButton onClick={navigateToHome}>
+                <ListItemIcon>
+                  <Home />
+                </ListItemIcon>
+                <ListItemText primary="Back to Main Page" />
               </ListItemButton>
             </ListItem>
           </motion.div>
