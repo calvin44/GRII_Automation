@@ -35,7 +35,7 @@ export default function Home() {
           feature={selectedFeature}
           handleFeatureSelect={handleFeatureSelect}
         />
-        {selectedFeature === "reminder" && <RemindUser />}
+        {selectedFeature === "lineUserList" && <RemindUser />}
         {selectedFeature === "createTemplate" && <CreateTemplate />}
         {selectedFeature === "laguKU" && <ListLagu />}
       </Box>

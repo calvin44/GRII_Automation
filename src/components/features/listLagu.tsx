@@ -8,7 +8,7 @@ import {
   ListItemText,
 } from "@mui/material"
 import { PictureAsPdf, Search } from "@mui/icons-material"
-import { sortFilesByDate } from "@/utils/frontend"
+import { setSession, getSession, sortFilesByDate } from "@/utils/frontend"
 import { motion } from "framer-motion"
 import { useDisplayDialog } from "@/customHook"
 import { Loading } from "../utils"
@@ -23,11 +23,17 @@ export const ListLagu: React.FC<ListLaguProps> = () => {
     useDisplayDialog()
 
   const fetchLagu = useCallback(async (): Promise<DriveFile[]> => {
+    const cachedLagu = getSession<DriveFile[]>("laguKU")
+    if (cachedLagu) return cachedLagu
     try {
       const response = await fetch("/api/getListLagu")
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`)
       const data = await response.json()
+
+      // Save in cache after fetch
+      setSession<DriveFile[]>("laguKU", data)
+
       return data as DriveFile[]
     } catch (err) {
       console.error("Error fetching files:", err)

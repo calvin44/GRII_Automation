@@ -5,7 +5,7 @@ type FeatureType = Feature
 
 export const useFeatureSelect = () => {
   const [selectedFeature, setSelectedFeature] =
-    useState<FeatureType>("reminder")
+    useState<FeatureType>("lineUserList")
 
   useEffect(() => {
     // This will only run on the client side

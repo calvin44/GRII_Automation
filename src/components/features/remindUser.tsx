@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   LinearProgress,
   ListItem,
   ListItemButton,
@@ -16,6 +15,7 @@ import { CustomList } from "../wrappers"
 import { Loading } from "../utils"
 import { ConfirmSendDialog, ErrorDialog, Response } from "../dialogs"
 import useModal, { ModalContainer } from "use-async-modal"
+import { getSession, setSession } from "@/utils/frontend"
 
 export const RemindUser: React.FC = () => {
   const [allUsers, setAllUsers] = useState<TargetUser[]>([])
@@ -25,11 +25,17 @@ export const RemindUser: React.FC = () => {
     useDisplayDialog()
 
   const fetchTargetUser = useCallback(async (): Promise<TargetUser[]> => {
+    const cachedUserList = getSession<TargetUser[]>("lineUserList")
+    if (cachedUserList) return cachedUserList
     try {
       const response = await fetch("/api/getTargetReminder")
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`)
       const data = await response.json()
+
+      // Save result to session
+      setSession("lineUserList", data["ids"])
+
       return data["ids"] as TargetUser[]
     } catch (err) {
       console.error("Error:", err)

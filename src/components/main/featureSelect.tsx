@@ -23,7 +23,7 @@ export const FeatureSelect: React.FC<FeatureSelectProps> = ({
         borderRadius: 3,
       }}
     >
-      <MenuItem value="reminder">Reminder</MenuItem>
+      <MenuItem value="lineUserList">Reminder</MenuItem>
       <MenuItem value="createTemplate">Add next month table</MenuItem>
       <MenuItem value="laguKU">Download Lagu KU</MenuItem>
 
