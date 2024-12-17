@@ -1,40 +1,96 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# GRII_Automation
+
+GRII_Automation is a Next.js project designed to automate sending reminders through a LINE bot based on data from a Google Sheet table (Table Penjadwalan Pengurus) and to download PDF files for songs (File Lagu) from Google Drive.
+
+## Features
+
+- **Automated Reminders:**
+  - Sends reminders via LINE bot based on schedules from the Google Sheet.
+- **File Management:**
+  - Downloads song PDFs from Google Drive to local storage for quick access.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js (v16 or newer)
+- A LINE Messaging API channel
+- Access to the Google Sheets and Google Drive APIs
+
+### Installation
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/your-username/GRII_Automation.git
+   cd GRII_Automation
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
+
+3. Configure environment variables:
+   - Create a `.env.local` file in the root directory.
+   - Add the following keys and replace placeholders with your actual values:
+     ```
+     LINE_CHANNEL_ACCESS_TOKEN=<your_line_channel_access_token>
+     LINE_CHANNEL_SECRET=<your_line_channel_secret>
+     GOOGLE_SHEET_ID=<your_google_sheet_id>
+     GOOGLE_DRIVE_FOLDER_ID=<your_google_drive_folder_id>
+     ```
+
+### Running the Development Server
+
+Start the development server:
 ```bash
 npm run dev
 # or
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Application Structure
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Since this project contains a single page, the main logic is located in:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- `pages/index.tsx`: The entry point for the application. Handles both LINE bot integration and file downloading functionalities.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### API Logic
+
+Any necessary API interactions are managed directly within the `index.tsx` file for simplicity. Utility functions may still be used for tasks like:
+
+- Interfacing with the LINE Messaging API.
+- Fetching data from Google Sheets.
+- Downloading files from Google Drive.
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about the tools used in this project, take a look at these resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API.
+- [LINE Messaging API Documentation](https://developers.line.biz/en/docs/messaging-api/) - Learn about LINE bot integration.
+- [Google Sheets API Documentation](https://developers.google.com/sheets/api) - Learn about automating Google Sheets.
+- [Google Drive API Documentation](https://developers.google.com/drive) - Learn about working with Google Drive.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+The easiest way to deploy your app is to use [Vercel](https://vercel.com/):
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push your code to GitHub.
+2. Connect your repository to Vercel.
+3. Add the environment variables in the Vercel dashboard.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+For more details, refer to the [Next.js deployment documentation](https://nextjs.org/docs/deployment).
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
