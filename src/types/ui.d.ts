@@ -1,1 +1,1 @@
-type Feature = "lineUserList" | "laguKU" | "createTemplate" | "admin"
+type Feature = "lineUserList" | "laguKU" | "createTemplate"

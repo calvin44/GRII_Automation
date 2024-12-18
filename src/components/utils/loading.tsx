@@ -1,7 +1,31 @@
-import { Box, Skeleton } from "@mui/material"
+import { Box, LinearProgress } from "@mui/material"
+import { Header } from "../main"
 
 export const Loading = () => {
   return (
-    <Skeleton height="100%" variant="rectangular" sx={{ borderRadius: 3 }} />
+    <Box
+      height="100%"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      width="100%"
+    >
+      <Box
+        width="100%"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        gap={5}
+        maxWidth={430}
+        bgcolor="white"
+        padding={4}
+        height="100%"
+      >
+        <Header />
+        <LinearProgress
+          sx={{ width: "60%", marginLeft: "auto", marginRight: "auto" }}
+        />
+      </Box>
+    </Box>
   )
 }

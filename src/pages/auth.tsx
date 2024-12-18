@@ -1,4 +1,4 @@
-import { Home, Login } from "@mui/icons-material"
+import { Login } from "@mui/icons-material"
 import {
   Box,
   List,
@@ -6,14 +6,13 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Typography,
 } from "@mui/material"
-import { useRouter } from "next/router"
 import { useCallback, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Header } from "@/components"
+import { useRouter } from "next/router"
 
-interface AdminQueryParams {
+interface AuthQuery {
   Authorized?: string
 }
 
@@ -21,19 +20,15 @@ interface AuthResponse {
   authURL: string
 }
 
-const Admin = () => {
+const Auth = () => {
   const { query } = useRouter()
-  const { Authorized } = query as AdminQueryParams
-  const { replace } = useRouter()
+  const { Authorized } = query as AuthQuery
 
   useEffect(() => {
     if (Authorized === "false") {
-      alert("User is not authorized")
+      alert("Not an Authorized email")
     }
   }, [Authorized])
-  const navigateToHome = useCallback(() => {
-    replace("/")
-  }, [])
 
   const handleAuthorize = useCallback(async () => {
     try {
@@ -103,30 +98,10 @@ const Admin = () => {
               </ListItemButton>
             </ListItem>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <ListItem
-              disablePadding
-              sx={{ bgcolor: "#f2f2f2", borderRadius: 3 }}
-            >
-              <ListItemButton onClick={navigateToHome}>
-                <ListItemIcon>
-                  <Home />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Back to Main Page"
-                  secondary="Navigate back to main page"
-                />
-              </ListItemButton>
-            </ListItem>
-          </motion.div>
         </List>
       </Box>
     </Box>
   )
 }
 
-export default Admin
+export default Auth

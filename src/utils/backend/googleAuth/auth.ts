@@ -1,6 +1,7 @@
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore"
 import { google } from "googleapis"
 import { db } from "../firebase"
+import { validateRefreshTokenURL } from "@/constants"
 
 export const oauth2Client = new google.auth.OAuth2(
   process.env.OAUTH2_CLIENT_ID,
@@ -80,5 +81,31 @@ export async function updateRefreshToken(
     console.log("Refresh token updated successfully.")
   } catch (err) {
     console.error("Error updating refresh token in Firestore:", err)
+  }
+}
+
+export async function validateRefreshToken() {
+  const refreshToken = await getRefreshTokenFromDB()
+  const requestBody = {
+    client_id: process.env.OAUTH2_CLIENT_ID,
+    client_secret: process.env.OAUTH2_CLIENT_SECRET,
+    refresh_token: refreshToken || "",
+    grant_type: "refresh_token",
+  }
+  try {
+    const response = await fetch(validateRefreshTokenURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    })
+
+    // Fetch error handling
+    if (!response.ok) return false
+    return true
+  } catch (err) {
+    console.error(err)
+    return false
   }
 }

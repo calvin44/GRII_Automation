@@ -64,12 +64,7 @@ export default async function handler(
 
     if (userInfoResponse.email !== AUTH_EMAIL) {
       console.error(`Unauthorized user: ${userInfoResponse.email}`)
-      return res.redirect(
-        302,
-        `/admin?Authorized=false&email=${encodeURIComponent(
-          userInfoResponse.email
-        )}`
-      )
+      return res.redirect(302, "/auth?Authorized=false")
     }
 
     if (!refreshToken) {
