@@ -1,4 +1,4 @@
-import { Loading } from "@/components"
+import { PageLoading } from "@/components"
 import { Box, createTheme, CssBaseline, ThemeProvider } from "@mui/material"
 import type { AppProps } from "next/app"
 import { useRouter } from "next/router"
@@ -44,7 +44,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box bgcolor="#ebebeb" height="100vh" width="100%">
-        {authValid ? <Component {...pageProps} /> : <Loading />}
+        {authValid ? <Component {...pageProps} /> : <PageLoading />}
       </Box>
     </ThemeProvider>
   )
